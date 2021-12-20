@@ -9,7 +9,7 @@ Created on Thu Dec 16 13:43:59 2021
 @author: Ryan.Larson
 """
 
-import numpy as np
+# import numpy as np
 import pandas as pd
 import datetime as dt
 import os
@@ -62,8 +62,6 @@ for file in glob.glob(filepattern):
                 eventtype.append("VAL")
                 dtime  = dt.datetime.strptime(rowlist[1],"%Y%m%d%H%M%S")        
                 datetime.append(dtime)
-                # date.append(dtime.date())
-                # time.append(dtime.time())
                 
                 styrenestr = rowlist[2]
                 split = styrenestr.split("\n")
@@ -131,7 +129,7 @@ for file in glob.glob(pfilepattern):
             end_datetime = dt.datetime.combine(endday,midnight)
             
             after_start = measdata["DateTime"] >= start_datetime
-            before_end = measdata["DateTime"] <= end_datetime
+            before_end = measdata["DateTime"] < end_datetime
             between_times = after_start & before_end
             on_day = measdata.loc[between_times]    # DataFrame of only the current day's data
             
@@ -149,14 +147,25 @@ for file in glob.glob(pfilepattern):
             # remove any duplicates and save the complete file back to the same
             # name. This way each unique date we have data for should have a single
             # file assigned to it.
+            if os.path.exists(pklfile):
+                print("Existing data found for {}".format(day))
+                existingdata = pd.read_pickle(pklfile)
+                
+                # Concatenate the existing data and new data
+                # Use pd.concat([data1, data2], axis=0) and then df = df.drop_duplicates(subset="DateTime", keep="first")
+                complete_day = pd.concat([existingdata, on_day], axis=0, ignore_index=True)
+                complete_day = complete_day.drop_duplicates(subset="DateTime", keep="first")
+                complete_day = complete_day.reset_index(drop=True)
+                print("Data combined for {}".format(day))
+                
+                # Save complete_day as a PKL file
+                complete_day.to_pickle(pklfile)
             
-            
-            
-            
-            
-            
-            
-            on_day.to_pickle(pklfile) # Create the PKL file for the current data log file
+            else:
+                print("No existing data found for {}".format(day))
+                on_day = on_day.reset_index(drop=True)
+                on_day.to_pickle(pklfile) # Create the PKL file for the current data log file
+                
             
         # Append the single day PKL file name to PROCESSED.csv
         # Append the datalog file name LOGGED.csv
