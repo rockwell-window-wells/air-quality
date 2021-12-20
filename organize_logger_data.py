@@ -9,7 +9,7 @@ Created on Thu Dec 16 13:43:59 2021
 @author: Ryan.Larson
 """
 
-import numpy as np
+# import numpy as np
 import pandas as pd
 import datetime as dt
 import os
@@ -50,8 +50,8 @@ for file in glob.glob(filepattern):
         
         eventtype = []
         datetime = []
-        date = []
-        time = []
+        # date = []
+        # time = []
         styrene = []
 
         for i in range(len(rawdata)):
@@ -62,8 +62,6 @@ for file in glob.glob(filepattern):
                 eventtype.append("VAL")
                 dtime  = dt.datetime.strptime(rowlist[1],"%Y%m%d%H%M%S")        
                 datetime.append(dtime)
-                date.append(dtime.date())
-                time.append(dtime.time())
                 
                 styrenestr = rowlist[2]
                 split = styrenestr.split("\n")
@@ -76,37 +74,30 @@ for file in glob.glob(filepattern):
                 
         measdata = pd.DataFrame({"EventType":eventtype,
                                  "DateTime":datetime,
-                                 "Date":date,
-                                 "Time":time,
+                                 # "Date":date,
+                                 # "Time":time,
                                  "Styrene":styrene})
         
         pklname = os.path.splitext(base)[0] + ".pkl"
         pklfile = directory + "\\" + pklname
         
-        measdata.to_pickle(pklfile)
+        measdata.to_pickle(pklfile) # Create the PKL file for the current data log file
         
-        # csvname = os.path.splitext(base)[0] + ".csv"
-        # csvfile = directory + "\\" + csvname
-        
-        # measdata.to_csv(csvfile, mode='a', index=False)  # Write measdata to csv
-        
-        # os.chmod(csvfile, S_IREAD|S_IRGRP|S_IROTH)  # Set the csvfile as read-only
-        
-        # # Append the datalog file name LOGGED.csv
-        # with open(logfile, 'a', newline='') as f_object:
-        #     writer_object = writer(f_object)    # Pass the CSV file object to the writer() function
-        #     writer_object.writerow([base])      # Pass the datalog filename as an argument into the writerow() function
-        #     f_object.close()                    # Close the file object
+        # Append the datalog file name LOGGED.csv
+        with open(logfile, 'a', newline='') as f_object:
+            writer_object = writer(f_object)    # Pass the CSV file object to the writer() function
+            writer_object.writerow([base])      # Pass the datalog filename as an argument into the writerow() function
+            f_object.close()                    # Close the file object
 
 
-print("All remaining files have been logged.")
+print("All raw data .txt files have been logged.")
 
 os.chmod(logfile, S_IREAD|S_IRGRP|S_IROTH)  # Make logfile read-only after writing new datalogger filenames to list
 
 
 ### Break down the CSV files by date for easy searching ###
-processedfile = directory + "\\By Day\\PROCESSED.csv"
-os.chmod(processedfile, S_IWUSR|S_IREAD)  # This makes the log file read/write
+processedfile = directory + "\\PROCESSED.csv"
+os.chmod(processedfile, S_IWUSR|S_IREAD)  # This makes the processed file read/write
 
 # Read the processedfile data into dataframe
 try:
@@ -114,56 +105,75 @@ try:
 except pd.errors.EmptyDataError:
     print("PROCESSED.csv is empty\n")
     
-pnamepattern = "ARPL-1307_PAC 8000*.csv"
+pnamepattern = "ARPL-1307_PAC 8000*.pkl"
 pfilepattern = directory + "\\" + pnamepattern
 
 for file in glob.glob(pfilepattern):
     base = os.path.basename(file)
-    print(base)
+    print("Checking for {}....".format(base))
     
-    # If the CSV file isn't in the list, process it
+    # If the PKL file isn't in the list, process it
     if not processed["ProcessedData"].str.contains(base).any():
         print("{} is not in the processed list".format(base))
         
-        measdata = pd.read_csv(file, parse_dates=True)    # Read the CSV data in to a DataFrame
-        measdata["Date"] = pd.to_datetime(measdata["Date"])
-        measdata["Date"] = measdata["Date"].dt.date
+        measdata = pd.read_pickle(file)    # Read the PKL data in to a DataFrame
         
-        measdata["Time"] = pd.to_datetime(measdata["Time"])
-        measdata["Time"] = measdata["Time"].dt.time
-        
-        measdata["DateTime"] = pd.to_datetime(measdata["DateTime"])
-        
-        # # daytimestr = 
-        # daytimes = []
-        for ind in measdata.index:
-            measdata.loc[ind,"DateTime"] = measdata.loc[ind,"DateTime"].to_pydatetime()
-        
-        # Get list of unique dates in measdata
         uniquedates = pd.to_datetime(measdata["DateTime"]).dt.date.unique()
-            
+        # print(uniquedates)
         
         # For each unique date, create a DataFrame with data only from that date
         for day in uniquedates:
-            print(type(day))
-            print(type(measdata["DateTime"][1]))
-            dateindices = measdata["Date"] == day
-            datedata = measdata.loc[dateindices]
+            midnight = dt.time(0,0,0)
+            start_datetime = dt.datetime.combine(day,midnight)
+            endday = day + dt.timedelta(days=1)
+            end_datetime = dt.datetime.combine(endday,midnight)
             
-            # Generate the CSV name based on date
-            daystr = day.strftime("%Y-%m-%d")
-            csvname = daystr + "_Styrene.csv"
-            csvfile = directory + "\\By Day\\" + csvname
+            after_start = measdata["DateTime"] >= start_datetime
+            before_end = measdata["DateTime"] < end_datetime
+            between_times = after_start & before_end
+            on_day = measdata.loc[between_times]    # DataFrame of only the current day's data
             
-            # Check if a CSV file exists in the By Day folder with the same name
-            dayfilepattern = directory + "\\By Day\\*_Styrene.csv"
-            for dayfile in glob.glob(dayfilepattern):
-                print(dayfile)
+            # Generate the PKL name based on date
+            pname = str(day) + "_Styrene.pkl"
+            pfile = directory + "\\By Day\\" + pname
+            
+            
+            
+            pklname = str(day) + "_Styrene.pkl"
+            pklfile = directory + "\\By Day\\" + pklname
+            
+            # Look in By Day folder for duplicate files of pklfile. If a file already
+            # exists, load its data and concatenate the new data with it. Then
+            # remove any duplicates and save the complete file back to the same
+            # name. This way each unique date we have data for should have a single
+            # file assigned to it.
+            if os.path.exists(pklfile):
+                print("Existing data found for {}".format(day))
+                existingdata = pd.read_pickle(pklfile)
                 
-                if csvname == dayfile:
-                    # If the generated CSV name has the same name as an existing CSV file,
-                    # open the existing file and append any new values from the current
-                    # CSV file, if any exist.
-                    print("\nA file already exists with that name")
-                else:
-                    print("File {} is not in the processed list".format(dayfile))
+                # Concatenate the existing data and new data
+                # Use pd.concat([data1, data2], axis=0) and then df = df.drop_duplicates(subset="DateTime", keep="first")
+                complete_day = pd.concat([existingdata, on_day], axis=0, ignore_index=True)
+                complete_day = complete_day.drop_duplicates(subset="DateTime", keep="first")
+                complete_day = complete_day.reset_index(drop=True)
+                print("Data combined for {}".format(day))
+                
+                # Save complete_day as a PKL file
+                complete_day.to_pickle(pklfile)
+            
+            else:
+                print("No existing data found for {}".format(day))
+                on_day = on_day.reset_index(drop=True)
+                on_day.to_pickle(pklfile) # Create the PKL file for the current data log file
+                
+            
+        # Append the single day PKL file name to PROCESSED.csv
+        # Append the datalog file name LOGGED.csv
+        with open(processedfile, 'a', newline='') as f_object:
+            writer_object = writer(f_object)    # Pass the CSV file object to the writer() function
+            writer_object.writerow([base])      # Pass the datalog filename as an argument into the writerow() function
+            f_object.close()                    # Close the file object
+            
+print("All processed data .pkl files have been broken down by day.")
+
+os.chmod(processedfile, S_IREAD|S_IRGRP|S_IROTH)  # Make processedfile read-only after writing new processed filenames to list
