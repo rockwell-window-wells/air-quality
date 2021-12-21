@@ -1,0 +1,27 @@
+MDBoxLayout:
+    orientation: "vertical"
+
+    MDToolbar:
+        title: "Actions"
+        pos_hint: {'top': 1}
+        left_action_items:[["menu", lambda x: app.callback()]]
+        on_action_button: app.callback(self.icon)
+
+    MDFloatLayout:
+        orientation: "vertical"
+
+        MDRaisedButton:
+            text: "  Refresh Data  "
+            pos_hint: {'top': .8, 'x': 0.1}
+
+        MDRaisedButton:
+            text: "Choose Single Date"
+            pos_hint: {'top': .6, 'x': 0.1}
+
+        MDRaisedButton:
+            text: "Choose Date Range"
+            pos_hint: {'top': .5}
+
+        MDRaisedButton:
+            text: "Calculate"
+            pos_hint: {'bottom': 1}
