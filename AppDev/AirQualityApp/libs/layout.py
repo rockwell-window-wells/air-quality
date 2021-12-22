@@ -2,15 +2,48 @@ KV = '''
 <HomeScreen>:
     name: "homescreen"
 
-    AnchorLayout:
-        anchor_x: "center"
-        anchor_y: "center"
+    MDBoxLayout:
+        # md_bg_color: app.theme_cls.primary_color
+        orientation: "vertical"
 
-        Image:
-            id: titlelogo
-            size_hint: None, None
-            size: 500, 500
-            source: "assets/RockwellTitleLogo.png"
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "top"
+
+            Image:
+                id: titlelogo
+                size_hint: None, None
+                size: 500, 500
+                source: "assets/RockwellTitleLogo.png"
+
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "top"
+
+            MDGridLayout:
+                cols:2
+                # md_bg_color: app.theme_cls.accent_color
+
+                # orientation: "horizontal"
+                size_hint: (0.35, 0.35)
+
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+
+                    MDRaisedButton:
+                        text: "English"
+                        font_style: "Button"
+                        # pos_hint: {"top": 1, "right": 1.0}
+
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+
+                    MDRaisedButton:
+                        text: "Espa\u00F1ol"
+                        font_style: "Button"
+                        pos_hint: {"top": 1, "right": 1.0}
 
 <SingleDayScreen>:
     name: "singledaystyrene"
@@ -41,7 +74,7 @@ KV = '''
             MDLabel:
                 id: settingstitle
                 text: "Settings"
-                font_style: "H3"
+                font_style: "H5"
                 pos_hint: {"top": 0.75, "x": 0.01}
 
         MDBoxLayout:
@@ -56,6 +89,7 @@ KV = '''
 
             MDRaisedButton:
                 text: "Set"
+                font_style: "Button"
                 pos_hint: {"bottom": 0.35}
                 on_press:
                     root.set_datafolder(datafolderpath.text) if datafolderpath.text != "" else None
@@ -63,13 +97,14 @@ KV = '''
 
             MDRectangleFlatButton:
                 text: "Reset"
+                font_style: "Button"
                 pos_hint: {"bottom": 0.35}
                 on_press: root.reset_datafolder(app.datafolder_default)
                 # on_press: folderlabel.text = app.globalstring
 
         MDLabel:
             id: datafolderlabel
-            text: "This is where the data folder path will confirm an update."
+            text: ""
             halign: "center"
 
         MDBoxLayout:
@@ -84,6 +119,7 @@ KV = '''
 
             MDRaisedButton:
                 text: "Set"
+                font_style: "Button"
                 pos_hint: {"top": 0.75}
                 on_press:
                     root.set_exportfolder(exportfolderpath.text) if exportfolderpath.text != "" else None
@@ -91,13 +127,15 @@ KV = '''
 
             MDRectangleFlatButton:
                 text: "Reset"
+                font_style: "Button"
                 pos_hint: {"top": 0.75}
                 on_press: root.reset_exportfolder(app.exportfolder_default)
 
         MDLabel:
             id: exportfolderlabel
-            text: "This is where the export folder path will confirm an update."
+            text: ""
             halign: "center"
+
 
 # Menu item in the DrawerList list.
 <ItemDrawer>:
