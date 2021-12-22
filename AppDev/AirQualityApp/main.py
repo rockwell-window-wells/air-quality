@@ -7,6 +7,7 @@ from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineIconListItem, MDList
 from kivymd.uix.screen import MDScreen
+from kivymd.font_definitions import theme_font_styles
 
 from kivy.config import Config
 from kivy.core.window import Window

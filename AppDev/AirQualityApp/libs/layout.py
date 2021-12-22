@@ -36,6 +36,14 @@ KV = '''
         padding: [10]
         spacing: 10
 
+        MDFloatLayout:
+
+            MDLabel:
+                id: settingstitle
+                text: "Settings"
+                font_style: "H3"
+                pos_hint: {"top": 0.75, "x": 0.01}
+
         MDBoxLayout:
             orientation: "horizontal"
             padding: [10]
