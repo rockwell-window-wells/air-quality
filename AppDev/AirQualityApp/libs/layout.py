@@ -1,4 +1,60 @@
 KV = '''
+<SettingsScreen>:
+    name: "settings"
+    folderlabel: folderlabel
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: [10]
+        spacing: 10
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: [10]
+            spacing: 10
+
+            MDTextField:
+                id: datafolderpath
+                hint_text:"Data folder path"
+                pos_hint: {"bottom": 0.3}
+
+            MDRaisedButton:
+                text: "Set"
+                pos_hint: {"bottom": 0.35}
+                on_press:
+                    root.set_datafolder(datafolderpath.text) if datafolderpath.text != "" else None
+                    datafolderpath.text = ""
+
+            MDRectangleFlatButton:
+                text: "Reset"
+                pos_hint: {"bottom": 0.35}
+                # on_press: root.reset_datafolder()
+                on_press: folderlabel.text = app.globalstring
+
+        MDLabel:
+            id: folderlabel
+            text: "This is where the data folder path will confirm an update."
+            halign: "center"
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: [10]
+            spacing: 10
+
+            MDTextField:
+                id: exportfolderpath
+                hint_text:"Export folder path"
+                pos_hint: {"top": 0.75}
+
+            MDRaisedButton:
+                text: "Set"
+                pos_hint: {"top": 0.75}
+
+            MDRectangleFlatButton:
+                text: "Reset"
+                pos_hint: {"top": 0.75}
+
+
 # Menu item in the DrawerList list.
 <ItemDrawer>:
     theme_text_color: "Custom"
@@ -55,13 +111,13 @@ KV = '''
 
             ItemDrawer:
                 text: "Settings"
-                icon: "application-settings-outline"
+                icon: "cog"
                 on_press:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "settings"
 
 
-MDScreen:
+RootScreen:
 
     MDToolbar:
         id: toolbar
@@ -103,49 +159,49 @@ MDScreen:
                     text: "Multi-day Styrene Screen!"
                     halign: "center"
 
-            MDScreen:
+            SettingsScreen:
                 name: "settings"
 
-                MDBoxLayout:
-                    orientation: "vertical"
-                    padding: [10]
-                    spacing: 10
-
-                    MDBoxLayout:
-                        orientation: "horizontal"
-                        padding: [10]
-                        spacing: 10
-
-                        MDTextField:
-                            id: newdatafolderpath
-                            hint_text:"Data folder path"
-                            pos_hint: {"bottom": 0.3}
-
-                        MDRaisedButton:
-                            text: "Set"
-                            pos_hint: {"bottom": 0.35}
-
-                        MDRectangleFlatButton:
-                            text: "Reset"
-                            pos_hint: {"bottom": 0.35}
-
-                    MDBoxLayout:
-                        orientation: "horizontal"
-                        padding: [10]
-                        spacing: 10
-
-                        MDTextField:
-                            id: exportfolderpath
-                            hint_text:"Export folder path"
-                            pos_hint: {"top": 0.75}
-
-                        MDRaisedButton:
-                            text: "Set"
-                            pos_hint: {"top": 0.75}
-
-                        MDRectangleFlatButton:
-                            text: "Reset"
-                            pos_hint: {"top": 0.75}
+                # MDBoxLayout:
+                #     orientation: "vertical"
+                #     padding: [10]
+                #     spacing: 10
+                #
+                #     MDBoxLayout:
+                #         orientation: "horizontal"
+                #         padding: [10]
+                #         spacing: 10
+                #
+                #         MDTextField:
+                #             id: newdatafolderpath
+                #             hint_text:"Data folder path"
+                #             pos_hint: {"bottom": 0.3}
+                #
+                #         MDRaisedButton:
+                #             text: "Set"
+                #             pos_hint: {"bottom": 0.35}
+                #
+                #         MDRectangleFlatButton:
+                #             text: "Reset"
+                #             pos_hint: {"bottom": 0.35}
+                #
+                #     MDBoxLayout:
+                #         orientation: "horizontal"
+                #         padding: [10]
+                #         spacing: 10
+                #
+                #         MDTextField:
+                #             id: exportfolderpath
+                #             hint_text:"Export folder path"
+                #             pos_hint: {"top": 0.75}
+                #
+                #         MDRaisedButton:
+                #             text: "Set"
+                #             pos_hint: {"top": 0.75}
+                #
+                #         MDRectangleFlatButton:
+                #             text: "Reset"
+                #             pos_hint: {"top": 0.75}
 
 
         MDNavigationDrawer:
@@ -155,5 +211,7 @@ MDScreen:
                 id: content_drawer
                 screen_manager: screen_manager
                 nav_drawer: nav_drawer
+
+
 
 '''

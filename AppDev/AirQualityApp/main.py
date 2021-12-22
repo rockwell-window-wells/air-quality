@@ -1,11 +1,12 @@
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, ObjectProperty
 
 from kivymd.app import MDApp
 from kivymd.theming import ThemableBehavior
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineIconListItem, MDList
+from kivymd.uix.screen import MDScreen
 
 from kivy.config import Config
 from kivy.core.window import Window
@@ -14,6 +15,40 @@ from libs.layout import KV
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (800, 600)
 Window.minimum_width, Window.minimum_height = Window.size
+
+class RootScreen(MDScreen):
+    pass
+
+class SettingsScreen(MDScreen):
+    directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
+    export_directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
+    datafolder_default = StringProperty(directory)
+    exportfolder_default = StringProperty(export_directory)
+    datafolder = datafolder_default
+    exportfolder = exportfolder_default
+    logfilestr = directory + "/LOGGED.csv"
+    logfile = StringProperty(logfilestr)
+    lognamepatternstr = "ARPL-1307_PAC 8000*.txt"
+    lognamepattern = StringProperty(lognamepatternstr)
+    logfilepatternstr = directory + "/" + lognamepatternstr
+    logfilepattern = StringProperty(logfilepatternstr)
+    processedfilestr = directory + "/PROCESSED.csv"
+    processedfile = StringProperty(processedfilestr)
+    pnamepatternstr = "ARPL-1307_PAC 8000*.pkl"
+    pnamepattern = StringProperty(pnamepatternstr)
+    pfilepatternstr = directory + "/" + pnamepatternstr
+    pfilepattern = StringProperty(pfilepatternstr)
+
+    def reset_datafolder(self):
+        # defaultval = self.datafolder_default
+        self.datafolder = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
+        self.folderlabel.text = self.datafolder + " is the new folder path!"
+        print(self.datafolder)
+
+    def set_datafolder(self, newfolder):
+        self.datafolder = newfolder
+        self.folderlabel.text = newfolder + " is the new folder path"
+        print(self.datafolder)
 
 
 class ContentNavigationDrawer(MDBoxLayout):
@@ -45,6 +80,10 @@ class DrawerList(ThemableBehavior, MDList):
 
 
 class AirQualityApp(MDApp):
+    # Global settings
+    globalstring = StringProperty('testing, testing.....')
+
+
 
     def build(self):
         # App settings
@@ -55,11 +94,11 @@ class AirQualityApp(MDApp):
         screen = Builder.load_string(KV)
 
         # Internal variables (not sure if these should be in the build function, init, or on_start)
-        self.datafolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
-        self.exportfolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
-        self.datafolder = self.datafolder_default
-        self.exportfolder = self.exportfolder_default
-        self.logfile = self.datafolder + "/LOGGED.csv"
+        # self.datafolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
+        # self.exportfolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
+        # self.datafolder = self.datafolder_default
+        # self.exportfolder = self.exportfolder_default
+        # self.logfile = self.datafolder + "/LOGGED.csv"
 
         return screen
 
