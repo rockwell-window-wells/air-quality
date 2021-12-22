@@ -9,140 +9,13 @@ from kivymd.uix.list import OneLineIconListItem, MDList
 
 from kivy.config import Config
 from kivy.core.window import Window
-# from libs.navigation_drawer import navigation_helper
+from libs.layout import KV
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (800, 600)
 Window.minimum_width, Window.minimum_height = Window.size
 
-KV = '''
-# Menu item in the DrawerList list.
-<ItemDrawer>:
-    theme_text_color: "Custom"
-    on_release: self.parent.set_color_item(self)
 
-    IconLeftWidget:
-        id: icon
-        icon: root.icon
-        theme_text_color: "Custom"
-        text_color: root.text_color
-
-
-<ContentNavigationDrawer>:
-    orientation: "vertical"
-    padding: "8dp"
-    spacing: "8dp"
-
-    AnchorLayout:
-        anchor_x: "left"
-        size_hint_y: None
-        height: avatar.height
-
-        Image:
-            id: avatar
-            size_hint: None, None
-            size: 200, 50
-            source: "assets/RockwellFullLogo.png"
-
-    ScrollView:
-
-        DrawerList:
-            id: md_list
-
-            ItemDrawer:
-                text: "Home"
-                icon: "home"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "homescreen"
-
-            ItemDrawer:
-                text: "Single Day Styrene"
-                icon: "calendar-check"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "singledaystyrene"
-
-            ItemDrawer:
-                text: "Multi-Day Styrene"
-                icon: "calendar-multiple-check"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "multidaystyrene"
-
-            ItemDrawer:
-                text: "Settings"
-                icon: "application-settings-outline"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "settings"
-
-
-
-
-
-MDScreen:
-
-    MDToolbar:
-        id: toolbar
-        pos_hint: {"top": 1}
-        elevation: 10
-        title: "Navigation"
-        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
-
-
-    MDNavigationLayout:
-
-        ScreenManager:
-            id: screen_manager
-
-            MDScreen:
-                name: "homescreen"
-
-                AnchorLayout:
-                    anchor_x: "center"
-                    anchor_y: "center"
-
-                    Image:
-                        id: titlelogo
-                        size_hint: None, None
-                        size: 500, 500
-                        source: "assets/RockwellTitleLogo.png"
-
-
-
-            MDScreen:
-                name: "singledaystyrene"
-
-                MDLabel:
-                    text: "You have found the Single Day Styrene Screen!"
-                    halign: "center"
-
-            MDScreen:
-                name: "multidaystyrene"
-
-                MDLabel:
-                    text: "Multi-day Styrene Screen!"
-                    halign: "center"
-
-            MDScreen:
-                name: "settings"
-
-                MDLabel:
-                    text: "Settings Screen"
-                    halign: "center"
-
-
-
-        MDNavigationDrawer:
-            id: nav_drawer
-
-            ContentNavigationDrawer:
-                id: content_drawer
-                screen_manager: screen_manager
-                nav_drawer: nav_drawer
-
-'''
 class ContentNavigationDrawer(MDBoxLayout):
     pass
 
@@ -163,15 +36,31 @@ class DrawerList(ThemableBehavior, MDList):
                 break
         instance_item.text_color = self.theme_cls.primary_color
 
+# class Settings():
+#     def __init__(self):
+#         self.datafolder = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
+#
+#     def change_datafolder(new_datafolder):
+#         self.datafolder = new_datafolder
+
 
 class AirQualityApp(MDApp):
 
     def build(self):
+        # App settings
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Green"
-        # self.icon = "assets/RockwellSmallLogo.png"
         self.title = "Rockwell Styrene Analysis Tool"
+        # self.icon = "assets/RockwellSmallLogo.png"
         screen = Builder.load_string(KV)
+
+        # Internal variables (not sure if these should be in the build function, init, or on_start)
+        self.datafolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
+        self.exportfolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
+        self.datafolder = self.datafolder_default
+        self.exportfolder = self.exportfolder_default
+        self.logfile = self.datafolder + "/LOGGED.csv"
+
         return screen
 
     # def on_start(self):
