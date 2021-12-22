@@ -106,7 +106,8 @@ class AirQualityApp(MDApp):
         # App settings
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Green"
-        self.title = "Rockwell Styrene Analysis Tool"
+        # self.theme_cls.accent_palette = "Green"
+        self.title = "Styrene Analysis Tool"
         # self.icon = "assets/RockwellSmallLogo.png"
         screen = Builder.load_string(KV)
 
