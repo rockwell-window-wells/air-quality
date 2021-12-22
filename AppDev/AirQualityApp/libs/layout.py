@@ -1,7 +1,35 @@
 KV = '''
+<HomeScreen>:
+    name: "homescreen"
+
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+
+        Image:
+            id: titlelogo
+            size_hint: None, None
+            size: 500, 500
+            source: "assets/RockwellTitleLogo.png"
+
+<SingleDayScreen>:
+    name: "singledaystyrene"
+
+    MDLabel:
+        text: "You have found the Single Day Styrene Screen!"
+        halign: "center"
+
+<MultiDayScreen>:
+    name: "multidaystyrene"
+
+    MDLabel:
+        text: "Multi-day Styrene Screen!"
+        halign: "center"
+
 <SettingsScreen>:
     name: "settings"
-    folderlabel: folderlabel
+    datafolderlabel: datafolderlabel
+    exportfolderlabel: exportfolderlabel
 
     MDBoxLayout:
         orientation: "vertical"
@@ -28,11 +56,11 @@ KV = '''
             MDRectangleFlatButton:
                 text: "Reset"
                 pos_hint: {"bottom": 0.35}
-                # on_press: root.reset_datafolder()
-                on_press: folderlabel.text = app.globalstring
+                on_press: root.reset_datafolder(app.datafolder_default)
+                # on_press: folderlabel.text = app.globalstring
 
         MDLabel:
-            id: folderlabel
+            id: datafolderlabel
             text: "This is where the data folder path will confirm an update."
             halign: "center"
 
@@ -49,11 +77,19 @@ KV = '''
             MDRaisedButton:
                 text: "Set"
                 pos_hint: {"top": 0.75}
+                on_press:
+                    root.set_exportfolder(exportfolderpath.text) if exportfolderpath.text != "" else None
+                    exportfolderpath.text = ""
 
             MDRectangleFlatButton:
                 text: "Reset"
                 pos_hint: {"top": 0.75}
+                on_press: root.reset_exportfolder(app.exportfolder_default)
 
+        MDLabel:
+            id: exportfolderlabel
+            text: "This is where the export folder path will confirm an update."
+            halign: "center"
 
 # Menu item in the DrawerList list.
 <ItemDrawer>:
@@ -132,76 +168,13 @@ RootScreen:
         ScreenManager:
             id: screen_manager
 
-            MDScreen:
-                name: "homescreen"
+            HomeScreen:
 
-                AnchorLayout:
-                    anchor_x: "center"
-                    anchor_y: "center"
+            SingleDayScreen:
 
-                    Image:
-                        id: titlelogo
-                        size_hint: None, None
-                        size: 500, 500
-                        source: "assets/RockwellTitleLogo.png"
-
-            MDScreen:
-                name: "singledaystyrene"
-
-                MDLabel:
-                    text: "You have found the Single Day Styrene Screen!"
-                    halign: "center"
-
-            MDScreen:
-                name: "multidaystyrene"
-
-                MDLabel:
-                    text: "Multi-day Styrene Screen!"
-                    halign: "center"
+            MultiDayScreen:
 
             SettingsScreen:
-                name: "settings"
-
-                # MDBoxLayout:
-                #     orientation: "vertical"
-                #     padding: [10]
-                #     spacing: 10
-                #
-                #     MDBoxLayout:
-                #         orientation: "horizontal"
-                #         padding: [10]
-                #         spacing: 10
-                #
-                #         MDTextField:
-                #             id: newdatafolderpath
-                #             hint_text:"Data folder path"
-                #             pos_hint: {"bottom": 0.3}
-                #
-                #         MDRaisedButton:
-                #             text: "Set"
-                #             pos_hint: {"bottom": 0.35}
-                #
-                #         MDRectangleFlatButton:
-                #             text: "Reset"
-                #             pos_hint: {"bottom": 0.35}
-                #
-                #     MDBoxLayout:
-                #         orientation: "horizontal"
-                #         padding: [10]
-                #         spacing: 10
-                #
-                #         MDTextField:
-                #             id: exportfolderpath
-                #             hint_text:"Export folder path"
-                #             pos_hint: {"top": 0.75}
-                #
-                #         MDRaisedButton:
-                #             text: "Set"
-                #             pos_hint: {"top": 0.75}
-                #
-                #         MDRectangleFlatButton:
-                #             text: "Reset"
-                #             pos_hint: {"top": 0.75}
 
 
         MDNavigationDrawer:

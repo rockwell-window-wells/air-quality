@@ -16,39 +16,46 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (800, 600)
 Window.minimum_width, Window.minimum_height = Window.size
 
+
 class RootScreen(MDScreen):
     pass
 
-class SettingsScreen(MDScreen):
-    directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
-    export_directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
-    datafolder_default = StringProperty(directory)
-    exportfolder_default = StringProperty(export_directory)
-    datafolder = datafolder_default
-    exportfolder = exportfolder_default
-    logfilestr = directory + "/LOGGED.csv"
-    logfile = StringProperty(logfilestr)
-    lognamepatternstr = "ARPL-1307_PAC 8000*.txt"
-    lognamepattern = StringProperty(lognamepatternstr)
-    logfilepatternstr = directory + "/" + lognamepatternstr
-    logfilepattern = StringProperty(logfilepatternstr)
-    processedfilestr = directory + "/PROCESSED.csv"
-    processedfile = StringProperty(processedfilestr)
-    pnamepatternstr = "ARPL-1307_PAC 8000*.pkl"
-    pnamepattern = StringProperty(pnamepatternstr)
-    pfilepatternstr = directory + "/" + pnamepatternstr
-    pfilepattern = StringProperty(pfilepatternstr)
 
-    def reset_datafolder(self):
-        # defaultval = self.datafolder_default
-        self.datafolder = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
-        self.folderlabel.text = self.datafolder + " is the new folder path!"
-        print(self.datafolder)
+class HomeScreen(MDScreen):
+    pass
+
+
+class SingleDayScreen(MDScreen):
+    pass
+
+
+class MultiDayScreen(MDScreen):
+    pass
+
+
+class SettingsScreen(MDScreen):
 
     def set_datafolder(self, newfolder):
+        # Add a check here to verify that newfolder is a valid folder path string
         self.datafolder = newfolder
-        self.folderlabel.text = newfolder + " is the new folder path"
+        self.datafolderlabel.text = "Data folder changed to: " + self.datafolder
         print(self.datafolder)
+
+    def reset_datafolder(self, defaultfolder):
+        self.datafolder = defaultfolder
+        self.datafolderlabel.text = "Data folder reset to: " + self.datafolder
+        print(self.datafolder)
+
+    def set_exportfolder(self, newfolder):
+        # Add a check here to verify that newfolder is a valid folder path string
+        self.exportfolder = newfolder
+        self.exportfolderlabel.text = "Export folder changed to: " + self.exportfolder
+        print(self.exportfolder)
+
+    def reset_exportfolder(self, defaultfolder):
+        self.exportfolder = defaultfolder
+        self.exportfolderlabel.text = "Export folder reset to: " + self.exportfolder
+        print(self.exportfolder)
 
 
 class ContentNavigationDrawer(MDBoxLayout):
@@ -71,19 +78,28 @@ class DrawerList(ThemableBehavior, MDList):
                 break
         instance_item.text_color = self.theme_cls.primary_color
 
-# class Settings():
-#     def __init__(self):
-#         self.datafolder = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
-#
-#     def change_datafolder(new_datafolder):
-#         self.datafolder = new_datafolder
-
 
 class AirQualityApp(MDApp):
     # Global settings
     globalstring = StringProperty('testing, testing.....')
-
-
+    directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
+    export_directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
+    datafolder_default = StringProperty(directory)
+    exportfolder_default = StringProperty(export_directory)
+    datafolder = datafolder_default
+    exportfolder = exportfolder_default
+    logfilestr = directory + "/LOGGED.csv"
+    logfile = StringProperty(logfilestr)
+    lognamepatternstr = "ARPL-1307_PAC 8000*.txt"
+    lognamepattern = StringProperty(lognamepatternstr)
+    logfilepatternstr = directory + "/" + lognamepatternstr
+    logfilepattern = StringProperty(logfilepatternstr)
+    processedfilestr = directory + "/PROCESSED.csv"
+    processedfile = StringProperty(processedfilestr)
+    pnamepatternstr = "ARPL-1307_PAC 8000*.pkl"
+    pnamepattern = StringProperty(pnamepatternstr)
+    pfilepatternstr = directory + "/" + pnamepatternstr
+    pfilepattern = StringProperty(pfilepatternstr)
 
     def build(self):
         # App settings
@@ -93,28 +109,10 @@ class AirQualityApp(MDApp):
         # self.icon = "assets/RockwellSmallLogo.png"
         screen = Builder.load_string(KV)
 
-        # Internal variables (not sure if these should be in the build function, init, or on_start)
-        # self.datafolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
-        # self.exportfolder_default = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
-        # self.datafolder = self.datafolder_default
-        # self.exportfolder = self.exportfolder_default
-        # self.logfile = self.datafolder + "/LOGGED.csv"
-
         return screen
 
-    # def on_start(self):
-    #     icons_item = {
-    #         "calendar-check": "Single Day Styrene",
-    #         "calendar-multiple-check": "Multi-Day Styrene",
-    #         "database": "Data Settings",
-    #         "export": "Export Settings",
-    #     }
-    #     for icon_name in icons_item.keys():
-    #         self.root.ids.content_drawer.ids.md_list.add_widget(
-    #             ItemDrawer(icon=icon_name, text=icons_item[icon_name])
-    #         )
 
-
+    # These date picker methods should be under the appropriate screen classes
     # # Click OK in date picker
     # def on_save(self, instance, value, date_range):
     #     # print(instance, value, date_range)
