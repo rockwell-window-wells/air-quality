@@ -29,8 +29,30 @@ class HomeScreen(MDScreen):
 
 class SingleDayScreen(MDScreen):
 
+    analysis_date = None
+
     def refreshdata_single(self, datadirectory):
         refresh_data(datadirectory)
+
+    def show_single_date_picker(self):
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_date_save=self.on_save)
+        date_dialog.open()
+
+    def on_date_save(self, instance, value, date_range):
+        self.analysis_date = value
+        # print("{} selected for analysis".format(self.analysis_date))
+        self.singleday_status.text = "{} selected for analysis".format(self.analysis_date)
+
+
+    def calculate_single_date(self):
+        if self.analysis_date is None:
+            self.singleday_status.text = "Analysis date not set!"
+        else:
+            self.singleday_status.text = "Generating analysis for {}.".format(self.analysis_date)
+        # print("{} selected for analysis".format(self.analysis_date))
+
+
 
 
 class MultiDayScreen(MDScreen):

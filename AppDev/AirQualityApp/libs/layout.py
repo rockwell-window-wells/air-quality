@@ -46,6 +46,7 @@ KV = '''
 
 <SingleDayScreen>:
     name: "singledaystyrene"
+    singleday_status: singleday_status
 
     MDGridLayout:
         cols: 2
@@ -54,7 +55,7 @@ KV = '''
 
         MDGridLayout:
             # orientation: "vertical"
-            rows: 5
+            rows: 6
             spacing: 10
             padding: 10
             # md_bg_color: app.theme_cls.accent_color
@@ -91,6 +92,7 @@ KV = '''
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
+                    on_release: root.show_single_date_picker()
 
             AnchorLayout:
                 anchor_x: "left"
@@ -114,6 +116,16 @@ KV = '''
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
+                    on_press: root.calculate_single_date()
+
+            AnchorLayout:
+                anchor_x: "left"
+                anchor_y: "center"
+
+                MDLabel:
+                    id: singleday_status
+                    text: ""
+                    # font_style: "Button"
 
         MDGridLayout:
             # Put the chart here
@@ -131,7 +143,7 @@ KV = '''
 
         MDGridLayout:
             # orientation: "vertical"
-            rows: 5
+            rows: 6
             spacing: 10
             padding: 10
             # md_bg_color: app.theme_cls.accent_color
@@ -191,6 +203,15 @@ KV = '''
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
+
+            AnchorLayout:
+                anchor_x: "left"
+                anchor_y: "center"
+
+                MDLabel:
+                    id: multiday_status
+                    text: ""
+                    # font_style: "Button"
 
         MDGridLayout:
             # Put the chart here
