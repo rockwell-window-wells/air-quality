@@ -155,6 +155,8 @@ KV = '''
                     text: "Refresh Data"
                     font_style: "Button"
                     # pos_hint: {"top": 0.5, "right": 0.5}
+                    on_press:
+                        root.refreshdata_multi(app.datafolder)
 
             AnchorLayout:
                 anchor_x: "left"

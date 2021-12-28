@@ -34,7 +34,9 @@ class SingleDayScreen(MDScreen):
 
 
 class MultiDayScreen(MDScreen):
-    pass
+
+    def refreshdata_multi(self, datadirectory):
+        refresh_data(datadirectory)
 
 
 class SettingsScreen(MDScreen):
