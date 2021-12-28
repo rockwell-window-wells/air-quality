@@ -12,6 +12,7 @@ from kivymd.font_definitions import theme_font_styles
 from kivy.config import Config
 from kivy.core.window import Window
 from libs.layout import KV
+from libs.datamethods import refresh_data
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (800, 600)
@@ -27,7 +28,9 @@ class HomeScreen(MDScreen):
 
 
 class SingleDayScreen(MDScreen):
-    pass
+
+    def refreshdata_single(self, datadirectory):
+        refresh_data(datadirectory)
 
 
 class MultiDayScreen(MDScreen):
