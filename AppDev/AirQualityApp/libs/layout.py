@@ -46,7 +46,7 @@ KV = '''
 
 <SingleDayScreen>:
     name: "singledaystyrene"
-    singleday_status: singleday_status
+    # singleday_status: singleday_status
 
     MDGridLayout:
         cols: 2
@@ -104,6 +104,9 @@ KV = '''
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
+                    # on_press:
+                        # root.snackbar_show("Check out the time!")
+                    on_release: root.show_time_dialog()
 
             AnchorLayout:
                 anchor_x: "left"
@@ -122,10 +125,7 @@ KV = '''
                 anchor_x: "left"
                 anchor_y: "center"
 
-                MDLabel:
-                    id: singleday_status
-                    text: ""
-                    # font_style: "Button"
+                Widget:
 
         MDGridLayout:
             # Put the chart here
@@ -191,6 +191,7 @@ KV = '''
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
+
 
             AnchorLayout:
                 anchor_x: "left"
