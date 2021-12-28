@@ -32,11 +32,13 @@ class HomeScreen(MDScreen):
 
 class SingleDayScreen(MDScreen):
 
-    analysis_date = None
-    analysis_starttime = None
-    analysis_endtime = None
-    snackbar = None
-    dialog = None
+    date = None         # Analysis date (single calendar day)
+    t_start = None      # Analysis start time
+    t_end = None        # Analysis end time
+    dt_start = None     # Datetime version of t_start
+    dt_end = None       # Datetime version of t_end
+    snackbar = None     # Holding variable for status snackbar
+    dialog = None       # Holding variable for time dialog
 
     # Snackbar for showing status messages (better than allocating space to labels)
     def snackbar_show(self, snackbartext):
@@ -56,20 +58,20 @@ class SingleDayScreen(MDScreen):
         date_dialog.open()
 
     def on_date_save(self, instance, value, date_range):
-        self.analysis_date = value
-        # print("{} selected for analysis".format(self.analysis_date))
-        status_text = "{} selected for analysis".format(self.analysis_date)
+        self.date = value
+        # print("{} selected for analysis".format(self.date))
+        status_text = "{} selected for analysis".format(self.date)
         self.snackbar_show(status_text)
 
     ### Functions for choosing analysis times ###
     def show_time_dialog(self, *args):
         theme_cls = ThemeManager()
-
         theme_cls.theme_style = "Light"
         theme_cls.primary_palette = "Green"
+
         if not self.dialog:
             self.dialog = MDDialog(
-                title="Time Range",
+                title="Set Time Range",
                 buttons=[
                     MDRaisedButton(
                         text="Start Time",
@@ -106,59 +108,60 @@ class SingleDayScreen(MDScreen):
         self.dialog.open()
 
     def set_time_dialog(self, *args):
-        # self.analysis_starttime = None
-        # self.analysis_endtime = None
+        # self.t_start = None
+        # self.t_end = None
         self.dialog.dismiss(force=True)
-        if not self.analysis_starttime or not self.analysis_endtime:
+        if not self.t_start or not self.t_end:
             statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
         else:
-            statustext = "TIME RANGE SET: {} to {}".format(self.analysis_starttime, self.analysis_endtime)
+            statustext = "TIME RANGE SET: {} to {}".format(self.t_start, self.t_end)
         self.snackbar_show(statustext)
 
     def clear_time_dialog(self, *args):
-        self.analysis_starttime = None
-        self.analysis_endtime = None
+        self.t_start = None
+        self.t_end = None
         statustext = "TIME RANGE CLEARED. Please choose time range before running analysis."
         self.snackbar_show(statustext)
 
     def cancel_time_dialog(self, *args):
         self.dialog.dismiss(force=True)
-        if not self.analysis_starttime or not self.analysis_endtime:
+        if not self.t_start or not self.t_end:
             statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
             self.snackbar_show(statustext)
 
     def show_start_time_picker(self, *args):
         time_dialog = MDTimePicker()
-        if self.analysis_starttime:
-            time_dialog.set_time(self.analysis_starttime)
+        if self.t_start:
+            time_dialog.set_time(self.t_start)
         time_dialog.bind(on_save=self.on_start_time_save)
         time_dialog.open()
 
     def on_start_time_save(self, instance, time):
-        self.analysis_starttime = time
-        status_text = "{} start time".format(self.analysis_starttime)
+        self.t_start = time
+        status_text = "{} start time".format(self.t_start)
         self.snackbar_show(status_text)
+        print(type(self.t_start))
 
     def show_end_time_picker(self, *args):
         time_dialog = MDTimePicker()
-        if self.analysis_endtime:
-            time_dialog.set_time(self.analysis_endtime)
+        if self.t_end:
+            time_dialog.set_time(self.t_end)
         time_dialog.bind(on_save=self.on_end_time_save)
         time_dialog.open()
 
     def on_end_time_save(self, instance, time):
-        self.analysis_endtime = time
-        status_text = "{} end time".format(self.analysis_endtime)
+        self.t_end = time
+        status_text = "{} end time".format(self.t_end)
         self.snackbar_show(status_text)
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate_single_date(self):
-        if self.analysis_date is None:
+        if self.date is None:
             self.snackbar_show("Analysis date not set!")
         else:
-            status_text = "Generating analysis for {}.".format(self.analysis_date)
+            status_text = "Generating analysis for {}.".format(self.date)
             self.snackbar_show(status_text)
-        # print("{} selected for analysis".format(self.analysis_date))
+        # print("{} selected for analysis".format(self.date))
 
 
 
