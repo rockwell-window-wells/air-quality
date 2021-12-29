@@ -10,6 +10,7 @@ import os
 import glob
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 from csv import writer
+import matplotlib.pyplot as plt
 
 def refresh_data(data_directory):
     """Function equivalent of organize-logger-data.py. Checks the data directory
@@ -49,8 +50,6 @@ def refresh_data(data_directory):
 
             eventtype = []
             datetime = []
-            # date = []
-            # time = []
             styrene = []
 
             for i in range(len(rawdata)):
@@ -134,7 +133,7 @@ def refresh_data(data_directory):
 
                 # Generate the PKL name based on date
                 pname = str(day) + "_Styrene.pkl"
-                pfile = directory + "\\By Day\\" + pname
+                pfile = directory + "\\By Day\\" + pname        # Is this redundant?
 
 
 
@@ -176,3 +175,72 @@ def refresh_data(data_directory):
     print("All processed data .pkl files have been broken down by day.")
 
     os.chmod(processedfile, S_IREAD|S_IRGRP|S_IROTH)  # Make processedfile read-only after writing new processed filenames to list
+
+
+def analyze_data(dstart, dend, tstart, tend, annotations, directory):
+    """Function for plotting styrene data over chosen interval between dtstart
+    and dtend, showing or not showing annotations, and calculating relevant
+    measures such as TWA.
+
+            Parameters:
+                    dstart: Datetime date object for starting date
+                    dend: Datetime date object for ending date
+                    tstart: Datetime time object for starting time
+                    tend: Datetime time object for ending time
+                    annotations: Boolean value to determine whether annotations
+                        should be printed on the output chart.
+                    directory: Folder path to the folder that contains the raw
+                        data .txt files, as well as the "By Day" folder and the
+                        LOGGED.csv and PROCESSED.csv files.
+    """
+
+    dtstart = dt.datetime.combine(dstart, tstart)
+    dtend = dt.datetime.combine(dend, tend)
+
+    if dstart != dend:
+        alldates = [dstart+dt.timedelta(days=x) for x in range((dend-dstart).days)]
+        alldates.append(dend)
+        print(alldates)
+
+        column_names = ["EventType","DateTime","Date","Time","Styrene"]
+        measdata = pd.DataFrame(columns = column_names)
+
+        for day in alldates:
+            pklname = str(day) + "_Styrene.pkl"
+            pklfile = directory + "\\By Day\\" + pklname
+
+            daydata = pd.read_pickle(pklfile)    # Read the PKL data in to a DataFrame
+
+            measdata = pd.concat([measdata, daydata], axis=0, ignore_index=True)
+            measdata = measdata.drop_duplicates(subset="DateTime", keep="first")
+            measdata = measdata.reset_index(drop=True)
+
+    else:
+        print("Data is from a single day")
+
+        pklname = str(dstart) + "_Styrene.pkl"
+        pklfile = directory + "\\By Day\\" + pklname
+
+        measdata = pd.read_pickle(pklfile)    # Read the PKL data in to a DataFrame
+
+
+    # Filter data to show only readings between two datetimes
+    after_start = measdata["DateTime"] >= dtstart
+    before_end = measdata["DateTime"] <= dtend
+    between_times = after_start & before_end
+    measdata_window = measdata.loc[between_times]
+
+    fig, ax = plt.subplots(figsize=(10,8))
+    ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
+    # Add if statement here to add annotations and the TWA line if annotations are True
+    ax.set_xlabel("Date and Time")
+    ax.set_ylabel("Styrene Level (ppm)")
+
+    # Create image from plot
+    # image = plt.savefig(fname, *, dpi='figure', format=None, metadata=None,
+    #     bbox_inches=None, pad_inches=0.1,
+    #     facecolor='auto', edgecolor='auto',
+    #     backend=None, **kwargs
+    #    )
+
+    plt.show()

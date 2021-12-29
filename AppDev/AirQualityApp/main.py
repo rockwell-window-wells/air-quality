@@ -17,6 +17,7 @@ from kivy.config import Config
 from kivy.core.window import Window
 from libs.layout import KV
 from libs.datamethods import refresh_data
+from libs.datamethods import analyze_data
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (800, 700)
@@ -159,13 +160,17 @@ class SingleDayScreen(MDScreen):
         self.snackbar_show(status_text)
 
     ### Functions for running analysis on the chosen date and time range ###
-    def calculate_single_date(self):
+    def calculate_single_date(self, date, tstart, tend, annotations, directory):
         if not self.date:
             self.snackbar_show("Analysis date not set!")
         else:
+
             status_text = "Generating analysis for {}.".format(self.date)
             self.snackbar_show(status_text)
+
+        analyze_data(date, date, tstart, tend, annotations, directory)
         # print("{} selected for analysis".format(self.date))
+
 
 
 

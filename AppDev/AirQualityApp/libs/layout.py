@@ -117,7 +117,7 @@ KV = '''
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
-                    on_release: root.calculate_single_date()
+                    on_release: root.calculate_single_date(root.date, root.t_start, root.t_end, True, app.directory)
 
             AnchorLayout:
                 anchor_x: "left"
