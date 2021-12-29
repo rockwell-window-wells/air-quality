@@ -55,11 +55,11 @@ KV = '''
 
         MDGridLayout:
             # orientation: "vertical"
-            rows: 6
+            rows: 7
             spacing: 10
             padding: 10
             # md_bg_color: app.theme_cls.accent_color
-            size_hint: (0.35, 1)
+            size_hint: (0.25, 1)
 
             MDFloatLayout:
 
@@ -79,7 +79,7 @@ KV = '''
                     text: "Refresh Data"
                     font_style: "Button"
                     # pos_hint: {"top": 0.5, "right": 0.5}
-                    on_press:
+                    on_release:
                         root.refreshdata_single(app.datafolder)
 
             AnchorLayout:
@@ -104,8 +104,6 @@ KV = '''
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
-                    # on_press:
-                        # root.snackbar_show("Check out the time!")
                     on_release: root.show_time_dialog()
 
             AnchorLayout:
@@ -119,18 +117,53 @@ KV = '''
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
-                    on_press: root.calculate_single_date()
+                    on_release: root.calculate_single_date()
 
             AnchorLayout:
                 anchor_x: "left"
                 anchor_y: "center"
 
-                Widget:
+                MDRaisedButton:
+                    id: export_single
+                    text: "Export"
+                    font_style: "Button"
+                    md_bg_color: app.theme_cls.accent_color
+                    pos_hint: {"top": 0.5, "right": 0.5}
+                    elevation: 5
 
-        MDGridLayout:
-            # Put the chart here
 
-            # Relevant data below the chart (TWA level, peak levels, name, date, shift, etc.)
+            MDBoxLayout:
+                orientation: "horizontal"
+
+                CheckBox:
+                    color: [0.01, 1, 0.01, 1]
+                    active: True
+
+                MDLabel:
+                    text: "Annotate Chart"
+
+        MDFloatLayout:
+
+            MDBoxLayout:
+                pos_hint: {"top": 0.9, "right": 1}
+                orientation: "vertical"
+                spacing: 10
+
+                MDCard:
+                    size_hint_y: 6
+                    pos_hint: {"top": 1, "x": 0.0}
+                    md_bg_color: app.theme_cls.accent_color
+
+                    # Put the chart here
+                    FitImage:
+                        id: plotsingle
+                        source: 'assets/test.png'
+
+                MDLabel:
+                    id: single_datalabel
+                    text: "TWA: \\nPeak: \\nName: \\nDate: \\nShift: "
+
+                MDLabel:
 
 
 <MultiDayScreen>:
@@ -143,20 +176,18 @@ KV = '''
 
         MDGridLayout:
             # orientation: "vertical"
-            rows: 6
+            rows: 7
             spacing: 10
             padding: 10
-            # md_bg_color: app.theme_cls.accent_color
-            size_hint: (0.35, 1)
+            size_hint: (0.25, 1)
 
             MDFloatLayout:
 
                 MDLabel:
-                    id: singledaytitle
+                    id: multidaytitle
                     text: "Multi-Day"
                     font_style: "H5"
                     pos_hint: {"top": 0.75, "x": 0.01}
-
 
             AnchorLayout:
                 anchor_x: "left"
@@ -166,8 +197,7 @@ KV = '''
                     id: refreshdata_single
                     text: "Refresh Data"
                     font_style: "Button"
-                    # pos_hint: {"top": 0.5, "right": 0.5}
-                    on_press:
+                    on_release:
                         root.refreshdata_multi(app.datafolder)
 
             AnchorLayout:
@@ -192,7 +222,6 @@ KV = '''
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
 
-
             AnchorLayout:
                 anchor_x: "left"
                 anchor_y: "center"
@@ -209,15 +238,55 @@ KV = '''
                 anchor_x: "left"
                 anchor_y: "center"
 
+                MDRaisedButton:
+                    id: export_single
+                    text: "Export"
+                    font_style: "Button"
+                    md_bg_color: app.theme_cls.accent_color
+                    pos_hint: {"top": 0.5, "right": 0.5}
+                    elevation: 5
+
+            AnchorLayout:
+                anchor_x: "left"
+                anchor_y: "center"
+
+                MDBoxLayout:
+                    orientation: "horizontal"
+
+                    CheckBox:
+                        color: [0.01, 1, 0.01, 1]
+                        active: True
+
+                    MDLabel:
+                        text: "Annotate Chart"
+
+
+        MDFloatLayout:
+
+            MDBoxLayout:
+                pos_hint: {"top": 0.9, "right": 1}
+                orientation: "vertical"
+                spacing: 10
+
+
+                MDCard:
+                    size_hint_y: 6
+                    pos_hint: {"top": 1, "x": 0.0}
+                    md_bg_color: app.theme_cls.accent_color
+
+
+
+                    # Put the chart here
+                    FitImage:
+                        id: plotmulti
+                        source: 'assets/test.png'
+
                 MDLabel:
-                    id: multiday_status
-                    text: ""
-                    # font_style: "Button"
+                    id: multi_datalabel
+                    text: "TWA: \\nPeak: \\nName: \\nDates: \\nShift: "
 
-        MDGridLayout:
-            # Put the chart here
+                MDLabel:
 
-            # Relevant data below the chart (TWA level, peak levels, name, date, shift, etc.)
 
 <SettingsScreen>:
     name: "settings"

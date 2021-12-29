@@ -11,6 +11,7 @@ from kivymd.font_definitions import theme_font_styles
 from kivymd.uix.snackbar.snackbar import Snackbar
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.dialog import MDDialog
+from kivy.uix.checkbox import CheckBox
 
 from kivy.config import Config
 from kivy.core.window import Window
@@ -18,7 +19,7 @@ from libs.layout import KV
 from libs.datamethods import refresh_data
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
-Window.size = (800, 600)
+Window.size = (800, 700)
 Window.minimum_width, Window.minimum_height = Window.size
 
 
@@ -47,6 +48,9 @@ class SingleDayScreen(MDScreen):
 
     # Refresh the data from the single day analysis screen
     def refreshdata_single(self, datadirectory):
+        # NOTE: THIS COULD BE UPDATED LATER TO GIVE THE DETAILS OF THE REFRESH
+        # IN A DIALOG BOX SO THE USER KNOWS HOW LONG TO WAIT. OR FIGURE OUT HOW
+        # TO ADD A PROGRESS BAR HERE.
         refresh_data(datadirectory)
         status_text = "Data is being refreshed"
         self.snackbar_show(status_text)
@@ -156,7 +160,7 @@ class SingleDayScreen(MDScreen):
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate_single_date(self):
-        if self.date is None:
+        if not self.date:
             self.snackbar_show("Analysis date not set!")
         else:
             status_text = "Generating analysis for {}.".format(self.date)
