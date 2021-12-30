@@ -197,6 +197,7 @@ def prepare_data(dstart, dend, tstart, tend, directory):
     dtend = dt.datetime.combine(dend, tend)
 
     if dstart != dend:
+        print("Calculating for multiple dates")
         alldates = [dstart+dt.timedelta(days=x) for x in range((dend-dstart).days)]
         alldates.append(dend)
         print(alldates)
@@ -208,11 +209,13 @@ def prepare_data(dstart, dend, tstart, tend, directory):
             pklname = str(day) + "_Styrene.pkl"
             pklfile = directory + "\\By Day\\" + pklname
 
-            daydata = pd.read_pickle(pklfile)    # Read the PKL data in to a DataFrame
+            # Check if the pklfile exists before trying to append to measdata
+            if exists(pklfile):
+                daydata = pd.read_pickle(pklfile)    # Read the PKL data in to a DataFrame
 
-            measdata = pd.concat([measdata, daydata], axis=0, ignore_index=True)
-            measdata = measdata.drop_duplicates(subset="DateTime", keep="first")
-            measdata = measdata.reset_index(drop=True)
+                measdata = pd.concat([measdata, daydata], axis=0, ignore_index=True)
+                measdata = measdata.drop_duplicates(subset="DateTime", keep="first")
+                measdata = measdata.reset_index(drop=True)
 
     else:
         print("Data is from a single day")
@@ -230,6 +233,7 @@ def prepare_data(dstart, dend, tstart, tend, directory):
     measdata_window = measdata.loc[between_times]
 
     return measdata_window, dtstart, dtend
+
 
 def plot_data(measdata_window, dtstart, dtend, annotations, directory):
     """Function for plotting styrene data over chosen interval between dtstart
