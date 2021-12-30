@@ -59,8 +59,31 @@ class SingleDayScreen(MDScreen):
         # IN A DIALOG BOX SO THE USER KNOWS HOW LONG TO WAIT. OR FIGURE OUT HOW
         # TO ADD A PROGRESS BAR HERE.
         refresh_data(datadirectory)
-        status_text = "Data is being refreshed"
-        self.snackbar_show(status_text)
+        # status_text = "Data has been refreshed"
+        # self.snackbar_show(status_text)
+        self.show_refresh_dialog()
+
+    def show_refresh_dialog(self, *args):
+        theme_cls = ThemeManager()
+        theme_cls.theme_style = "Light"
+        theme_cls.primary_palette = "Green"
+
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title="Data Refresh Complete",
+                text="All raw data has been prepared for use.",
+                buttons=[
+                    MDFlatButton(
+                        text="OK",
+                        font_style="Button",
+                        on_release=self.close_refresh_dialog
+                    ),
+                ],
+            )
+        self.dialog.open()
+
+    def close_refresh_dialog(self, *args):
+        self.dialog.dismiss(force=True)
 
     ### Functions for choosing the date in single date analysis ###
     def show_single_date_picker(self):
@@ -70,8 +93,6 @@ class SingleDayScreen(MDScreen):
 
     def on_date_save(self, instance, value, date_range):
         self.date = value
-        # status_text = "{} selected for analysis".format(self.date)
-        # self.snackbar_show(status_text)
 
     ### Functions for choosing analysis times ###
     def show_time_dialog(self, *args):
@@ -118,8 +139,6 @@ class SingleDayScreen(MDScreen):
         self.dialog.open()
 
     def set_time_dialog(self, *args):
-        # self.t_start = None
-        # self.t_end = None
         self.dialog.dismiss(force=True)
         if not self.t_start or not self.t_end:
             statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
@@ -148,8 +167,6 @@ class SingleDayScreen(MDScreen):
 
     def on_start_time_save(self, instance, time):
         self.t_start = time
-        # status_text = "{} start time".format(self.t_start)
-        # self.snackbar_show(status_text)
 
     def show_end_time_picker(self, *args):
         time_dialog = MDTimePicker()
@@ -160,8 +177,6 @@ class SingleDayScreen(MDScreen):
 
     def on_end_time_save(self, instance, time):
         self.t_end = time
-        # status_text = "{} end time".format(self.t_end)
-        # self.snackbar_show(status_text)
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate_single_date(self, date, tstart, tend, annotations, directory):
@@ -175,11 +190,7 @@ class SingleDayScreen(MDScreen):
         if measdata_window.empty:
             print('ERROR: No data for chosen date and times.')
         else:
-
-            # self.ids.plotsingle.clear_widgets()
             self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
-            # self.ids.plotsingle.add_widget(FitImage(id=graphsingle, source=self.img_src))
-
 
             print("TWA: {} ppm".format(self.twa))
             print("Peak: {} ppm".format(self.peak))
