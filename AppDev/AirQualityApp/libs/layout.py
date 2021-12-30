@@ -44,8 +44,8 @@ KV = '''
                         elevation: 5
                         pos_hint: {"top": 1, "right": 1.0}
 
-<SingleDayScreen>:
-    name: "singledaystyrene"
+<AnalysisScreen>:
+    name: "analysisscreen"
     # singleday_status: singleday_status
     plotsingle: plotsingle
     annotatecheck: annotatecheck
@@ -82,7 +82,7 @@ KV = '''
                     font_style: "Button"
                     # pos_hint: {"top": 0.5, "right": 0.5}
                     on_release:
-                        root.refreshdata_single(app.datafolder)
+                        root.refreshdata_btn(app.datafolder)
 
             AnchorLayout:
                 anchor_x: "left"
@@ -90,7 +90,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: choosedate_single
-                    text: "Single Date"
+                    text: "Single Day"
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
@@ -106,7 +106,7 @@ KV = '''
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
-                    on_release: root.show_single_date_picker()
+                    on_release: root.show_multi_date_picker()
 
             AnchorLayout:
                 anchor_x: "left"
@@ -125,14 +125,14 @@ KV = '''
                 anchor_y: "center"
 
                 MDRaisedButton:
-                    id: calculate_single
+                    id: calculate
                     text: "Calculate"
                     font_style: "Button"
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
                     on_release:
-                        root.calculate_single_date(root.date, root.t_start, root.t_end, root.annotatecheck.active, app.directory)
+                        root.calculate(root.annotatecheck.active, app.directory)
 
             AnchorLayout:
                 anchor_x: "left"
@@ -177,10 +177,6 @@ KV = '''
                         id: graphsingle
                         source: root.img_src
 
-                # MDLabel:
-                #     id: single_datalabel
-                #     text: "TWA: \\nPeak: "
-
                 MDTextField:
                     id: employeename
                     hint_text:"Employee wearing PAC 8000"
@@ -188,124 +184,124 @@ KV = '''
 
                 MDTextField:
 
-<MultiDayScreen>:
-    name: "multidaystyrene"
-
-    MDGridLayout:
-        cols: 2
-        padding: 10
-        spacing: 10
-
-        MDGridLayout:
-            # orientation: "vertical"
-            rows: 7
-            spacing: 10
-            padding: 10
-            size_hint: (0.25, 1)
-
-            MDFloatLayout:
-
-                MDLabel:
-                    id: multidaytitle
-                    text: "Multi-Day"
-                    font_style: "H5"
-                    pos_hint: {"top": 0.75, "x": 0.01}
-
-            AnchorLayout:
-                anchor_x: "left"
-                anchor_y: "center"
-
-                MDRaisedButton:
-                    id: refreshdata_single
-                    text: "Refresh Data"
-                    font_style: "Button"
-                    on_release:
-                        root.refreshdata_multi(app.datafolder)
-
-            AnchorLayout:
-                anchor_x: "left"
-                anchor_y: "center"
-
-                MDRaisedButton:
-                    id: choosedate_single
-                    text: "Date Range"
-                    font_style: "Button"
-                    pos_hint: {"top": 0.5, "right": 0.5}
-                    elevation: 5
-
-            AnchorLayout:
-                anchor_x: "left"
-                anchor_y: "center"
-
-                MDRaisedButton:
-                    id: timerange_single
-                    text: "Time Range"
-                    font_style: "Button"
-                    pos_hint: {"top": 0.5, "right": 0.5}
-                    elevation: 5
-
-            AnchorLayout:
-                anchor_x: "left"
-                anchor_y: "center"
-
-                MDRaisedButton:
-                    id: calculate_single
-                    text: "Calculate"
-                    font_style: "Button"
-                    md_bg_color: app.theme_cls.accent_color
-                    pos_hint: {"top": 0.5, "right": 0.5}
-                    elevation: 5
-
-            AnchorLayout:
-                anchor_x: "left"
-                anchor_y: "center"
-
-                MDRaisedButton:
-                    id: export_single
-                    text: "Export"
-                    font_style: "Button"
-                    md_bg_color: app.theme_cls.accent_color
-                    pos_hint: {"top": 0.5, "right": 0.5}
-                    elevation: 5
-
-            AnchorLayout:
-                anchor_x: "left"
-                anchor_y: "center"
-
-                MDBoxLayout:
-                    orientation: "horizontal"
-
-                    CheckBox:
-                        color: [0.01, 1, 0.01, 1]
-                        active: True
-
-                    MDLabel:
-                        text: "Annotate Chart"
-
-
-        MDFloatLayout:
-
-            MDBoxLayout:
-                pos_hint: {"top": 0.9, "right": 1}
-                orientation: "vertical"
-                spacing: 10
-
-                MDCard:
-                    size_hint_y: 6
-                    # height: "200dp"
-                    pos_hint: {"top": 1, "x": 0.0}
-                    md_bg_color: app.theme_cls.accent_color
-
-                    # Put the chart here
-                    FitImage:
-                        id: plotmulti
-                        source: 'assets/test.png'
-
-                # MDLabel:
-                #     id: multi_datalabel
-                #     text: "TWA: \\nPeak: \\nName: \\nDates: \\nShift: "
-
-                MDLabel:
+# <MultiDayScreen>:
+#     name: "multidaystyrene"
+#
+#     MDGridLayout:
+#         cols: 2
+#         padding: 10
+#         spacing: 10
+#
+#         MDGridLayout:
+#             # orientation: "vertical"
+#             rows: 7
+#             spacing: 10
+#             padding: 10
+#             size_hint: (0.25, 1)
+#
+#             MDFloatLayout:
+#
+#                 MDLabel:
+#                     id: multidaytitle
+#                     text: "Multi-Day"
+#                     font_style: "H5"
+#                     pos_hint: {"top": 0.75, "x": 0.01}
+#
+#             AnchorLayout:
+#                 anchor_x: "left"
+#                 anchor_y: "center"
+#
+#                 MDRaisedButton:
+#                     id: refreshdata_single
+#                     text: "Refresh Data"
+#                     font_style: "Button"
+#                     on_release:
+#                         root.refreshdata_multi(app.datafolder)
+#
+#             AnchorLayout:
+#                 anchor_x: "left"
+#                 anchor_y: "center"
+#
+#                 MDRaisedButton:
+#                     id: choosedate_single
+#                     text: "Date Range"
+#                     font_style: "Button"
+#                     pos_hint: {"top": 0.5, "right": 0.5}
+#                     elevation: 5
+#
+#             AnchorLayout:
+#                 anchor_x: "left"
+#                 anchor_y: "center"
+#
+#                 MDRaisedButton:
+#                     id: timerange_single
+#                     text: "Time Range"
+#                     font_style: "Button"
+#                     pos_hint: {"top": 0.5, "right": 0.5}
+#                     elevation: 5
+#
+#             AnchorLayout:
+#                 anchor_x: "left"
+#                 anchor_y: "center"
+#
+#                 MDRaisedButton:
+#                     id: calculate_single
+#                     text: "Calculate"
+#                     font_style: "Button"
+#                     md_bg_color: app.theme_cls.accent_color
+#                     pos_hint: {"top": 0.5, "right": 0.5}
+#                     elevation: 5
+#
+#             AnchorLayout:
+#                 anchor_x: "left"
+#                 anchor_y: "center"
+#
+#                 MDRaisedButton:
+#                     id: export_single
+#                     text: "Export"
+#                     font_style: "Button"
+#                     md_bg_color: app.theme_cls.accent_color
+#                     pos_hint: {"top": 0.5, "right": 0.5}
+#                     elevation: 5
+#
+#             AnchorLayout:
+#                 anchor_x: "left"
+#                 anchor_y: "center"
+#
+#                 MDBoxLayout:
+#                     orientation: "horizontal"
+#
+#                     CheckBox:
+#                         color: [0.01, 1, 0.01, 1]
+#                         active: True
+#
+#                     MDLabel:
+#                         text: "Annotate Chart"
+#
+#
+#         MDFloatLayout:
+#
+#             MDBoxLayout:
+#                 pos_hint: {"top": 0.9, "right": 1}
+#                 orientation: "vertical"
+#                 spacing: 10
+#
+#                 MDCard:
+#                     size_hint_y: 6
+#                     # height: "200dp"
+#                     pos_hint: {"top": 1, "x": 0.0}
+#                     md_bg_color: app.theme_cls.accent_color
+#
+#                     # Put the chart here
+#                     FitImage:
+#                         id: plotmulti
+#                         source: 'assets/test.png'
+#
+#                 # MDLabel:
+#                 #     id: multi_datalabel
+#                 #     text: "TWA: \\nPeak: \\nName: \\nDates: \\nShift: "
+#
+#                 MDLabel:
 
 
 <SettingsScreen>:
@@ -431,18 +427,18 @@ KV = '''
                     root.screen_manager.current = "homescreen"
 
             ItemDrawer:
-                text: "Single Day Styrene"
-                icon: "calendar-check"
+                text: "Analysis"
+                icon: "chart-line"
                 on_press:
                     root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "singledaystyrene"
+                    root.screen_manager.current = "analysisscreen"
 
-            ItemDrawer:
-                text: "Multi-Day Styrene"
-                icon: "calendar-multiple-check"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "multidaystyrene"
+            # ItemDrawer:
+            #     text: "Multi-Day Styrene"
+            #     icon: "chart-line"
+            #     on_press:
+            #         root.nav_drawer.set_state("close")
+            #         root.screen_manager.current = "multidaystyrene"
 
             ItemDrawer:
                 text: "Settings"
@@ -469,9 +465,9 @@ RootScreen:
 
             HomeScreen:
 
-            SingleDayScreen:
+            AnalysisScreen:
 
-            MultiDayScreen:
+            # MultiDayScreen:
 
             SettingsScreen:
 

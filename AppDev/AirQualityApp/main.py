@@ -35,9 +35,10 @@ class HomeScreen(MDScreen):
     pass
 
 
-class SingleDayScreen(MDScreen):
+class AnalysisScreen(MDScreen):
 
     date = None         # Analysis date (single calendar day)
+    dates = None        # Analysis dates (multiple calendar days)
     t_start = None      # Analysis start time
     t_end = None        # Analysis end time
     dt_start = None     # Datetime version of t_start
@@ -55,7 +56,7 @@ class SingleDayScreen(MDScreen):
         self.snackbar.open()
 
     # Refresh the data from the single day analysis screen
-    def refreshdata_single(self, datadirectory):
+    def refreshdata_btn(self, datadirectory):
         # NOTE: THIS COULD BE UPDATED LATER TO GIVE THE DETAILS OF THE REFRESH
         # IN A DIALOG BOX SO THE USER KNOWS HOW LONG TO WAIT. OR FIGURE OUT HOW
         # TO ADD A PROGRESS BAR HERE.
@@ -89,11 +90,25 @@ class SingleDayScreen(MDScreen):
     ### Functions for choosing the date in single date analysis ###
     def show_single_date_picker(self):
         date_dialog = MDDatePicker()
-        date_dialog.bind(on_save=self.on_date_save)
+        date_dialog.bind(on_save=self.on_single_date_save)
         date_dialog.open()
 
-    def on_date_save(self, instance, value, date_range):
+    def on_single_date_save(self, instance, value, date_range):
         self.date = value
+        self.dates = None
+        print("self.date = {}\nself.dates = {}".format(self.date, self.dates))
+        # print(instance, value, date_range)
+
+    ### Functions for choosing the date in single date analysis ###
+    def show_multi_date_picker(self):
+        date_dialog = MDDatePicker(mode="range")
+        date_dialog.bind(on_save=self.on_multi_date_save)
+        date_dialog.open()
+
+    def on_multi_date_save(self, instance, value, date_range):
+        self.dates = date_range
+        self.date = None
+        print("self.date = {}\nself.dates = {}".format(self.date, self.dates))
 
     ### Functions for choosing analysis times ###
     def show_time_dialog(self, *args):
@@ -180,15 +195,16 @@ class SingleDayScreen(MDScreen):
         self.t_end = time
 
     ### Functions for running analysis on the chosen date and time range ###
-    def calculate_single_date(self, date, tstart, tend, annotations, directory):
+    def calculate(self, annotations, directory):
         # if not self.date:
         #     self.snackbar_show("Missing date. Unable to generate plot.")
         # else:
         #     if not self.t_start or not self.t_end:
         #         self.snackbar_show("Missing times. Unable to generate plot.")
 
+        # If the data is from a single day and the time range is chosen:
         if self.date and self.t_start and self.t_end:
-            measdata_window, self.dt_start, self.dt_end = prepare_data(date, date, tstart, tend, directory)
+            measdata_window, self.dt_start, self.dt_end = prepare_data(self.date, self.date, self.t_start, self.t_end, directory)
             if measdata_window.empty:
                 print('ERROR: No data for chosen date and times.')
             else:
@@ -196,17 +212,29 @@ class SingleDayScreen(MDScreen):
 
                 print("TWA: {} ppm".format(self.twa))
                 print("Peak: {} ppm".format(self.peak))
-        elif not self.date:
-            self.snackbar_show("Missing date. Unable to generate plot.")
+
+        # If the data is from multiple dates and the time range is chosen:
+        elif self.dates and self.t_start and self.t_end:
+            measdata_window, self.dt_start, self.dt_end = prepare_data(min(self.dates), max(self.dates), self.t_start, self.t_end, directory)
+            if measdata_window.empty:
+                print('ERROR: No data for chosen date range and times.')
+            else:
+                self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
+
+                print("TWA: {} ppm".format(self.twa))
+                print("Peak: {} ppm".format(self.peak))
+
+        elif not self.date and not self.dates:
+            self.snackbar_show("Missing date(s). Unable to generate plot.")
         else:
             self.snackbar_show("Missing times. Unable to generate plot.")
 
 
 
-class MultiDayScreen(MDScreen):
-
-    def refreshdata_multi(self, datadirectory):
-        refresh_data(datadirectory)
+# class MultiDayScreen(MDScreen):
+#
+#     def refreshdata_multi(self, datadirectory):
+#         refresh_data(datadirectory)
 
 
 class SettingsScreen(MDScreen):
