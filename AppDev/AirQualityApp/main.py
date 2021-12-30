@@ -17,6 +17,7 @@ from kivy.config import Config
 from kivy.core.window import Window
 from libs.layout import KV
 from libs.datamethods import refresh_data, prepare_data, plot_data
+from libs.exportmethods import generatesinglePDF, generatemultiPDF
 import os
 from os.path import exists
 # from libs.datamethods import prepare_data
@@ -38,7 +39,7 @@ class HomeScreen(MDScreen):
 class AnalysisScreen(MDScreen):
 
     date = None         # Analysis date (single calendar day)
-    dates = None        # Analysis dates (multiple calendar days)
+    dates = None        # Analysis dates (multiple day analysis)
     t_start = None      # Analysis start time
     t_end = None        # Analysis end time
     dt_start = None     # Datetime version of t_start
@@ -55,7 +56,7 @@ class AnalysisScreen(MDScreen):
         self.snackbar = Snackbar(text = snackbartext)
         self.snackbar.open()
 
-    # Refresh the data from the single day analysis screen
+     # Refresh the data from the single day analysis screen
     def refreshdata_btn(self, datadirectory):
         # NOTE: THIS COULD BE UPDATED LATER TO GIVE THE DETAILS OF THE REFRESH
         # IN A DIALOG BOX SO THE USER KNOWS HOW LONG TO WAIT. OR FIGURE OUT HOW
@@ -196,12 +197,6 @@ class AnalysisScreen(MDScreen):
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate(self, annotations, directory):
-        # if not self.date:
-        #     self.snackbar_show("Missing date. Unable to generate plot.")
-        # else:
-        #     if not self.t_start or not self.t_end:
-        #         self.snackbar_show("Missing times. Unable to generate plot.")
-
         # If the data is from a single day and the time range is chosen:
         if self.date and self.t_start and self.t_end:
             measdata_window, self.dt_start, self.dt_end = prepare_data(self.date, self.date, self.t_start, self.t_end, directory)
@@ -229,12 +224,36 @@ class AnalysisScreen(MDScreen):
         else:
             self.snackbar_show("Missing times. Unable to generate plot.")
 
+    ### Functions for exporting the analysis to a PDF ###
+    def export(self, exportdirectory, plot, employee):
+        # If the data is for a single day:
+        if self.date and not self.dates and self.t_start and self.t_end:
+            tstartstr = str(self.t_start)
+            tstartstr = tstartstr[0:-3]
+            tstartstr = tstartstr.replace(":", "")
+            tendstr = str(self.t_end)
+            tendstr = tendstr[0:-3]
+            tendstr = tendstr.replace(":", "")
+            pdfname = str(self.date) + "_{}-{}_Styrene_Report.pdf".format(tstartstr,tendstr)
+            generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, employee, pdfname, exportdirectory)
+            print("PDF report generated for single day")
+            print("Look for {} in {}".format(pdfname, exportdirectory))
 
-
-# class MultiDayScreen(MDScreen):
-#
-#     def refreshdata_multi(self, datadirectory):
-#         refresh_data(datadirectory)
+        elif self.dates and not self.date and self.t_start and self.t_end:
+            tstartstr = str(self.t_start)
+            tstartstr = tstartstr[0:-3]
+            tstartstr = tstartstr.replace(":", "")
+            tendstr = str(self.t_end)
+            tendstr = tendstr[0:-3]
+            tendstr = tendstr.replace(":", "")
+            pdfname = "{}_{}_{}-{}_Styrene_Report.pdf".format(str(min(self.dates)), str(max(self.dates)), tstartstr, tendstr)
+            generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, employee, pdfname, exportdirectory)
+            print("PDF report generated for multiple dates")
+            print("Look for {} in {}".format(pdfname, exportdirectory))
+        elif not self.date and not self.dates:
+            self.snackbar_show("Missing date(s). Unable to export data.")
+        else:
+            self.snackbar_show("Missing time range. Unable to export data.")
 
 
 class SettingsScreen(MDScreen):

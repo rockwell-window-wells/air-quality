@@ -49,6 +49,7 @@ KV = '''
     # singleday_status: singleday_status
     plotsingle: plotsingle
     annotatecheck: annotatecheck
+    employeename: employeename
 
     MDGridLayout:
         cols: 2
@@ -67,7 +68,7 @@ KV = '''
 
                 MDLabel:
                     id: singledaytitle
-                    text: "Single Day"
+                    text: "Analysis"
                     font_style: "H5"
                     pos_hint: {"top": 0.75, "x": 0.01}
 
@@ -145,6 +146,8 @@ KV = '''
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
+                    on_release:
+                        root.export(app.export_directory, root.img_src, employeename.text)
 
 
             MDBoxLayout:
@@ -170,7 +173,6 @@ KV = '''
                     size_hint_y: 4.5
                     pos_hint: {"top": 1, "x": 0.0}
                     md_bg_color: app.theme_cls.accent_color
-                    elevation: 5
 
                     # Put the chart here
                     FitImage:
@@ -433,13 +435,6 @@ KV = '''
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "analysisscreen"
 
-            # ItemDrawer:
-            #     text: "Multi-Day Styrene"
-            #     icon: "chart-line"
-            #     on_press:
-            #         root.nav_drawer.set_state("close")
-            #         root.screen_manager.current = "multidaystyrene"
-
             ItemDrawer:
                 text: "Settings"
                 icon: "cog"
@@ -466,8 +461,6 @@ RootScreen:
             HomeScreen:
 
             AnalysisScreen:
-
-            # MultiDayScreen:
 
             SettingsScreen:
 
