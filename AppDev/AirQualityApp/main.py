@@ -16,11 +16,14 @@ from kivy.uix.checkbox import CheckBox
 from kivy.config import Config
 from kivy.core.window import Window
 from libs.layout import KV
-from libs.datamethods import refresh_data
-from libs.datamethods import analyze_data
+from libs.datamethods import refresh_data, prepare_data, plot_data
+import os
+from os.path import exists
+# from libs.datamethods import prepare_data
+# from libs.datamethods import plot_data
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
-Window.size = (800, 700)
+Window.size = (1000, 750)
 Window.minimum_width, Window.minimum_height = Window.size
 
 
@@ -41,6 +44,9 @@ class SingleDayScreen(MDScreen):
     dt_end = None       # Datetime version of t_end
     snackbar = None     # Holding variable for status snackbar
     dialog = None       # Holding variable for time dialog
+    twa = None          # Time-weighted average over the time chosen (doesn't assume 8 hours)
+    peak = None         # Maximum styrene value recorded during time range of interest
+    img_src = StringProperty('assets/test.png')
 
     # Snackbar for showing status messages (better than allocating space to labels)
     def snackbar_show(self, snackbartext):
@@ -64,9 +70,8 @@ class SingleDayScreen(MDScreen):
 
     def on_date_save(self, instance, value, date_range):
         self.date = value
-        # print("{} selected for analysis".format(self.date))
-        status_text = "{} selected for analysis".format(self.date)
-        self.snackbar_show(status_text)
+        # status_text = "{} selected for analysis".format(self.date)
+        # self.snackbar_show(status_text)
 
     ### Functions for choosing analysis times ###
     def show_time_dialog(self, *args):
@@ -143,9 +148,8 @@ class SingleDayScreen(MDScreen):
 
     def on_start_time_save(self, instance, time):
         self.t_start = time
-        status_text = "{} start time".format(self.t_start)
-        self.snackbar_show(status_text)
-        print(type(self.t_start))
+        # status_text = "{} start time".format(self.t_start)
+        # self.snackbar_show(status_text)
 
     def show_end_time_picker(self, *args):
         time_dialog = MDTimePicker()
@@ -156,22 +160,29 @@ class SingleDayScreen(MDScreen):
 
     def on_end_time_save(self, instance, time):
         self.t_end = time
-        status_text = "{} end time".format(self.t_end)
-        self.snackbar_show(status_text)
+        # status_text = "{} end time".format(self.t_end)
+        # self.snackbar_show(status_text)
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate_single_date(self, date, tstart, tend, annotations, directory):
         if not self.date:
-            self.snackbar_show("Analysis date not set!")
+            self.snackbar_show("Missing date. Unable to generate plot.")
+        else:
+            if not self.t_start or not self.t_end:
+                self.snackbar_show("Missing times. Unable to generate plot.")
+
+        measdata_window, self.dt_start, self.dt_end = prepare_data(date, date, tstart, tend, directory)
+        if measdata_window.empty:
+            print('ERROR: No data for chosen date and times.')
         else:
 
-            status_text = "Generating analysis for {}.".format(self.date)
-            self.snackbar_show(status_text)
-
-        analyze_data(date, date, tstart, tend, annotations, directory)
-        # print("{} selected for analysis".format(self.date))
+            # self.ids.plotsingle.clear_widgets()
+            self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
+            # self.ids.plotsingle.add_widget(FitImage(id=graphsingle, source=self.img_src))
 
 
+            print("TWA: {} ppm".format(self.twa))
+            print("Peak: {} ppm".format(self.peak))
 
 
 
@@ -256,28 +267,16 @@ class AirQualityApp(MDApp):
         # self.theme_cls.accent_palette = "Green"
         self.title = "Styrene Analysis Tool"
         # self.icon = "assets/RockwellSmallLogo.png"
+
         screen = Builder.load_string(KV)
 
         return screen
 
 
-    # These date picker methods should be under the appropriate screen classes
-    # # Click OK in date picker
-    # def on_save(self, instance, value, date_range):
-    #     # print(instance, value, date_range)
-    #     # self.root.ids.date_label.text = str(value)
-    #     # self.root.ids.range_label.text = str(date_range)
-    #     self.root.ids.date_label.text = str(date_range[0])
-    #
-    # # Click Cancel in date picker
-    # def on_cancel(self, instance, value):
-    #     self.root.ids.date_label.text = "You Clicked Cancel"
-    #
-    # def show_date_picker(self):
-    #     date_dialog = MDDatePicker(mode="range")
-    #     date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
-    #     date_dialog.open()
-
-
 if __name__ == '__main__':
     AirQualityApp().run()
+    # On close, delete the generated plot images
+    i = 0
+    while os.path.exists(AirQualityApp.directory + f"/plot{i}.png"):
+        os.remove(AirQualityApp.directory + f"/plot{i}.png")
+        i += 1

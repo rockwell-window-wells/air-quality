@@ -47,6 +47,7 @@ KV = '''
 <SingleDayScreen>:
     name: "singledaystyrene"
     # singleday_status: singleday_status
+    plotsingle: plotsingle
 
     MDGridLayout:
         cols: 2
@@ -117,7 +118,8 @@ KV = '''
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
-                    on_release: root.calculate_single_date(root.date, root.t_start, root.t_end, True, app.directory)
+                    on_release:
+                        root.calculate_single_date(root.date, root.t_start, root.t_end, True, app.directory)
 
             AnchorLayout:
                 anchor_x: "left"
@@ -147,24 +149,30 @@ KV = '''
             MDBoxLayout:
                 pos_hint: {"top": 0.9, "right": 1}
                 orientation: "vertical"
-                spacing: 10
+                spacing: 0
 
                 MDCard:
-                    size_hint_y: 6
+                    id: plotsingle
+                    size_hint_y: 4.5
                     pos_hint: {"top": 1, "x": 0.0}
                     md_bg_color: app.theme_cls.accent_color
+                    elevation: 5
 
                     # Put the chart here
                     FitImage:
-                        id: plotsingle
-                        source: 'assets/test.png'
+                        id: graphsingle
+                        source: root.img_src
 
-                MDLabel:
-                    id: single_datalabel
-                    text: "TWA: \\nPeak: \\nName: \\nDate: \\nShift: "
+                # MDLabel:
+                #     id: single_datalabel
+                #     text: "TWA: \\nPeak: "
 
-                MDLabel:
+                MDTextField:
+                    id: employeename
+                    hint_text:"Employee wearing PAC 8000"
+                    pos_hint: {"top": 1}
 
+                MDTextField:
 
 <MultiDayScreen>:
     name: "multidaystyrene"
@@ -268,22 +276,20 @@ KV = '''
                 orientation: "vertical"
                 spacing: 10
 
-
                 MDCard:
                     size_hint_y: 6
+                    # height: "200dp"
                     pos_hint: {"top": 1, "x": 0.0}
                     md_bg_color: app.theme_cls.accent_color
-
-
 
                     # Put the chart here
                     FitImage:
                         id: plotmulti
                         source: 'assets/test.png'
 
-                MDLabel:
-                    id: multi_datalabel
-                    text: "TWA: \\nPeak: \\nName: \\nDates: \\nShift: "
+                # MDLabel:
+                #     id: multi_datalabel
+                #     text: "TWA: \\nPeak: \\nName: \\nDates: \\nShift: "
 
                 MDLabel:
 
@@ -373,7 +379,7 @@ KV = '''
 # Menu item in the DrawerList list.
 <ItemDrawer>:
     theme_text_color: "Custom"
-    on_release: self.parent.set_color_item(self)
+    # on_release: self.parent.set_color_item(self)
 
     IconLeftWidget:
         id: icon

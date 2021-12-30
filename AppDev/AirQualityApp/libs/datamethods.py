@@ -5,8 +5,10 @@ read-logger-data.py for use in air quality app
 """
 
 import pandas as pd
+import numpy as np
 import datetime as dt
 import os
+from os.path import exists
 import glob
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 from csv import writer
@@ -177,18 +179,15 @@ def refresh_data(data_directory):
     os.chmod(processedfile, S_IREAD|S_IRGRP|S_IROTH)  # Make processedfile read-only after writing new processed filenames to list
 
 
-def analyze_data(dstart, dend, tstart, tend, annotations, directory):
-    """Function for plotting styrene data over chosen interval between dtstart
-    and dtend, showing or not showing annotations, and calculating relevant
-    measures such as TWA.
+def prepare_data(dstart, dend, tstart, tend, directory):
+    """Function for gathering styrene data over chosen interval between dtstart
+    and dtend.
 
             Parameters:
                     dstart: Datetime date object for starting date
                     dend: Datetime date object for ending date
                     tstart: Datetime time object for starting time
                     tend: Datetime time object for ending time
-                    annotations: Boolean value to determine whether annotations
-                        should be printed on the output chart.
                     directory: Folder path to the folder that contains the raw
                         data .txt files, as well as the "By Day" folder and the
                         LOGGED.csv and PROCESSED.csv files.
@@ -230,6 +229,25 @@ def analyze_data(dstart, dend, tstart, tend, annotations, directory):
     between_times = after_start & before_end
     measdata_window = measdata.loc[between_times]
 
+    return measdata_window, dtstart, dtend
+
+def plot_data(measdata_window, dtstart, dtend, annotations, directory):
+    """Function for plotting styrene data over chosen interval between dtstart
+    and dtend and showing or not showing annotations, and calculating relevant
+    measures such as TWA.
+
+            Parameters:
+                    dstart: Datetime date object for starting date
+                    dend: Datetime date object for ending date
+                    tstart: Datetime time object for starting time
+                    tend: Datetime time object for ending time
+                    annotations: Boolean value to determine whether annotations
+                        should be printed on the output chart.
+                    directory: Folder path to the folder that contains the raw
+                        data .txt files, as well as the "By Day" folder and the
+                        LOGGED.csv and PROCESSED.csv files.
+    """
+
     fig, ax = plt.subplots(figsize=(10,8))
     ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
     # Add if statement here to add annotations and the TWA line if annotations are True
@@ -237,10 +255,24 @@ def analyze_data(dstart, dend, tstart, tend, annotations, directory):
     ax.set_ylabel("Styrene Level (ppm)")
 
     # Create image from plot
-    # image = plt.savefig(fname, *, dpi='figure', format=None, metadata=None,
-    #     bbox_inches=None, pad_inches=0.1,
-    #     facecolor='auto', edgecolor='auto',
-    #     backend=None, **kwargs
-    #    )
+    i = 0
+    while os.path.exists(directory + f"/plot{i}.png"):
+        i += 1
+    plotname = directory + "/plot{}.png".format(i)
+    plt.savefig(plotname)
+    plt.close()
+    # print("image variable is type: {}".format(type(image)))
 
-    plt.show()
+
+    peak = measdata_window["Styrene"].max()
+
+    twasum = measdata_window["Styrene"].sum()
+    # twatime = measdata_window["DateTime"].max() - measdata_window["DateTime"].min() # This underestimates TWA for periods where there is no data.
+    # twatime = twatime.total_seconds()
+    twatime = np.sum(measdata_window["Styrene"].count()) # This assumes the datalogger is always in seconds
+    twa = twasum/twatime
+    twa = np.around(twa,1)
+
+    # plt.show()
+
+    return twa, peak, plotname
