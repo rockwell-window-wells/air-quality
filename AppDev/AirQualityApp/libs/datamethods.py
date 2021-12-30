@@ -247,23 +247,6 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
                         data .txt files, as well as the "By Day" folder and the
                         LOGGED.csv and PROCESSED.csv files.
     """
-
-    fig, ax = plt.subplots(figsize=(10,8))
-    ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
-    # Add if statement here to add annotations and the TWA line if annotations are True
-    ax.set_xlabel("Date and Time")
-    ax.set_ylabel("Styrene Level (ppm)")
-
-    # Create image from plot
-    i = 0
-    while os.path.exists(directory + f"/plot{i}.png"):
-        i += 1
-    plotname = directory + "/plot{}.png".format(i)
-    plt.savefig(plotname)
-    plt.close()
-    # print("image variable is type: {}".format(type(image)))
-
-
     peak = measdata_window["Styrene"].max()
 
     twasum = measdata_window["Styrene"].sum()
@@ -273,6 +256,23 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
     twa = twasum/twatime
     twa = np.around(twa,1)
 
-    # plt.show()
+    fig, ax = plt.subplots(figsize=(10,8))
+    ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
+    # Add if statement here to add annotations and the TWA line if annotations are True
+    if annotations is True:
+        twaline = twa*np.ones(len(measdata_window["Styrene"]))
+        ax.plot(measdata_window["DateTime"], twaline, label="TWA")
+        ax.legend()
+    ax.set_title("Measured Styrene Level")
+    ax.set_xlabel("Date and Time")
+    ax.set_ylabel("Styrene Concentration (ppm)")
+
+    # Create image from plot
+    i = 0
+    while os.path.exists(directory + f"/plot{i}.png"):
+        i += 1
+    plotname = directory + "/plot{}.png".format(i)
+    plt.savefig(plotname)
+    plt.close()
 
     return twa, peak, plotname

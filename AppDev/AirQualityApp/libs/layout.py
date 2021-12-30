@@ -48,6 +48,7 @@ KV = '''
     name: "singledaystyrene"
     # singleday_status: singleday_status
     plotsingle: plotsingle
+    annotatecheck: annotatecheck
 
     MDGridLayout:
         cols: 2
@@ -56,7 +57,7 @@ KV = '''
 
         MDGridLayout:
             # orientation: "vertical"
-            rows: 7
+            rows: 8
             spacing: 10
             padding: 10
             # md_bg_color: app.theme_cls.accent_color
@@ -89,7 +90,19 @@ KV = '''
 
                 MDRaisedButton:
                     id: choosedate_single
-                    text: "Date"
+                    text: "Single Date"
+                    font_style: "Button"
+                    pos_hint: {"top": 0.5, "right": 0.5}
+                    elevation: 5
+                    on_release: root.show_single_date_picker()
+
+            AnchorLayout:
+                anchor_x: "left"
+                anchor_y: "center"
+
+                MDRaisedButton:
+                    id: choosedate_single
+                    text: "Multiple Dates"
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
@@ -119,7 +132,7 @@ KV = '''
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
                     on_release:
-                        root.calculate_single_date(root.date, root.t_start, root.t_end, True, app.directory)
+                        root.calculate_single_date(root.date, root.t_start, root.t_end, root.annotatecheck.active, app.directory)
 
             AnchorLayout:
                 anchor_x: "left"
@@ -138,6 +151,7 @@ KV = '''
                 orientation: "horizontal"
 
                 CheckBox:
+                    id: annotatecheck
                     color: [0.01, 1, 0.01, 1]
                     active: True
 

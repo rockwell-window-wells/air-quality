@@ -43,7 +43,8 @@ class SingleDayScreen(MDScreen):
     dt_start = None     # Datetime version of t_start
     dt_end = None       # Datetime version of t_end
     snackbar = None     # Holding variable for status snackbar
-    dialog = None       # Holding variable for time dialog
+    time_range_dialog = None       # Holding variable for time dialog
+    refresh_dialog = None   # Holding variable for refresh data dialog
     twa = None          # Time-weighted average over the time chosen (doesn't assume 8 hours)
     peak = None         # Maximum styrene value recorded during time range of interest
     img_src = StringProperty('assets/test.png')
@@ -68,8 +69,8 @@ class SingleDayScreen(MDScreen):
         theme_cls.theme_style = "Light"
         theme_cls.primary_palette = "Green"
 
-        if not self.dialog:
-            self.dialog = MDDialog(
+        if not self.refresh_dialog:
+            self.refresh_dialog = MDDialog(
                 title="Data Refresh Complete",
                 text="All raw data has been prepared for use.",
                 buttons=[
@@ -80,10 +81,10 @@ class SingleDayScreen(MDScreen):
                     ),
                 ],
             )
-        self.dialog.open()
+        self.refresh_dialog.open()
 
     def close_refresh_dialog(self, *args):
-        self.dialog.dismiss(force=True)
+        self.refresh_dialog.dismiss(force=True)
 
     ### Functions for choosing the date in single date analysis ###
     def show_single_date_picker(self):
@@ -100,8 +101,8 @@ class SingleDayScreen(MDScreen):
         theme_cls.theme_style = "Light"
         theme_cls.primary_palette = "Green"
 
-        if not self.dialog:
-            self.dialog = MDDialog(
+        if not self.time_range_dialog:
+            self.time_range_dialog = MDDialog(
                 title="Set Time Range",
                 buttons=[
                     MDRaisedButton(
@@ -136,10 +137,10 @@ class SingleDayScreen(MDScreen):
                     ),
                 ],
             )
-        self.dialog.open()
+        self.time_range_dialog.open()
 
     def set_time_dialog(self, *args):
-        self.dialog.dismiss(force=True)
+        self.time_range_dialog.dismiss(force=True)
         if not self.t_start or not self.t_end:
             statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
         else:
@@ -153,7 +154,7 @@ class SingleDayScreen(MDScreen):
         self.snackbar_show(statustext)
 
     def cancel_time_dialog(self, *args):
-        self.dialog.dismiss(force=True)
+        self.time_range_dialog.dismiss(force=True)
         if not self.t_start or not self.t_end:
             statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
             self.snackbar_show(statustext)
@@ -180,20 +181,25 @@ class SingleDayScreen(MDScreen):
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate_single_date(self, date, tstart, tend, annotations, directory):
-        if not self.date:
+        # if not self.date:
+        #     self.snackbar_show("Missing date. Unable to generate plot.")
+        # else:
+        #     if not self.t_start or not self.t_end:
+        #         self.snackbar_show("Missing times. Unable to generate plot.")
+
+        if self.date and self.t_start and self.t_end:
+            measdata_window, self.dt_start, self.dt_end = prepare_data(date, date, tstart, tend, directory)
+            if measdata_window.empty:
+                print('ERROR: No data for chosen date and times.')
+            else:
+                self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
+
+                print("TWA: {} ppm".format(self.twa))
+                print("Peak: {} ppm".format(self.peak))
+        elif not self.date:
             self.snackbar_show("Missing date. Unable to generate plot.")
         else:
-            if not self.t_start or not self.t_end:
-                self.snackbar_show("Missing times. Unable to generate plot.")
-
-        measdata_window, self.dt_start, self.dt_end = prepare_data(date, date, tstart, tend, directory)
-        if measdata_window.empty:
-            print('ERROR: No data for chosen date and times.')
-        else:
-            self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
-
-            print("TWA: {} ppm".format(self.twa))
-            print("Peak: {} ppm".format(self.peak))
+            self.snackbar_show("Missing times. Unable to generate plot.")
 
 
 
@@ -205,26 +211,39 @@ class MultiDayScreen(MDScreen):
 
 class SettingsScreen(MDScreen):
 
+    # Snackbar for showing status messages (better than allocating space to labels)
+    def snackbar_show(self, snackbartext):
+        self.snackbar = Snackbar(text = snackbartext)
+        self.snackbar.open()
+
     def set_datafolder(self, newfolder):
         # Add a check here to verify that newfolder is a valid folder path string
         self.datafolder = newfolder
-        self.datafolderlabel.text = "Data folder changed to: " + self.datafolder
+        statustext = "Data folder changed to {}".format(self.datafolder)
+        self.snackbar_show(statustext)
+        # self.datafolderlabel.text = "Data folder changed to: " + self.datafolder
         print(self.datafolder)
 
     def reset_datafolder(self, defaultfolder):
         self.datafolder = defaultfolder
-        self.datafolderlabel.text = "Data folder reset to: " + self.datafolder
+        statustext = "Data folder reset to {}".format(self.datafolder)
+        self.snackbar_show(statustext)
+        # self.datafolderlabel.text = "Data folder reset to: " + self.datafolder
         print(self.datafolder)
 
     def set_exportfolder(self, newfolder):
         # Add a check here to verify that newfolder is a valid folder path string
         self.exportfolder = newfolder
-        self.exportfolderlabel.text = "Export folder changed to: " + self.exportfolder
-        print(self.exportfolder)
+        statustext = "Export folder changed to {}".format(self.datafolder)
+        self.snackbar_show(statustext)
+        # self.exportfolderlabel.text = "Export folder changed to: " + self.exportfolder
+        # print(self.exportfolder)
 
     def reset_exportfolder(self, defaultfolder):
         self.exportfolder = defaultfolder
-        self.exportfolderlabel.text = "Export folder reset to: " + self.exportfolder
+        statustext = "Export folder reset to {}".format(self.datafolder)
+        self.snackbar_show(statustext)
+        # self.exportfolderlabel.text = "Export folder reset to: " + self.exportfolder
         print(self.exportfolder)
 
 
