@@ -12,13 +12,15 @@ from kivymd.uix.snackbar.snackbar import Snackbar
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.dialog import MDDialog
 from kivy.uix.checkbox import CheckBox
+from kivy.uix.recycleview import RecycleView
 
 from kivy.config import Config
 from kivy.core.window import Window
 from libs.layout import KV
 from libs.datamethods import refresh_data, prepare_data, plot_data
 from libs.exportmethods import generatesinglePDF, generatemultiPDF
-import os
+import os, sys
+from kivy.resources import resource_add_path, resource_find
 from os.path import exists
 # from libs.datamethods import prepare_data
 # from libs.datamethods import plot_data
@@ -343,7 +345,7 @@ class AirQualityApp(MDApp):
         self.theme_cls.primary_palette = "Green"
         # self.theme_cls.accent_palette = "Green"
         self.title = "Styrene Analysis Tool"
-        # self.icon = "assets/RockwellSmallLogo.png"
+        self.icon = "assets/RWLettermark.png"
 
         screen = Builder.load_string(KV)
 
@@ -351,9 +353,17 @@ class AirQualityApp(MDApp):
 
 
 if __name__ == '__main__':
-    AirQualityApp().run()
-    # On close, delete the generated plot images
-    i = 0
-    while os.path.exists(AirQualityApp.directory + f"/plot{i}.png"):
-        os.remove(AirQualityApp.directory + f"/plot{i}.png")
-        i += 1
+    try:
+        if hasattr(sys, '_MEIPASS'):
+            resource_add_path(os.path.join(sys._MEIPASS))
+        app = AirQualityApp()
+        app.run()
+        # On close, delete the generated plot images
+        i = 0
+        while os.path.exists(AirQualityApp.directory + f"/plot{i}.png"):
+            os.remove(AirQualityApp.directory + f"/plot{i}.png")
+            i += 1
+
+    except Exception as e:
+        print(e)
+        input("Press enter.")

@@ -4,6 +4,7 @@ after a plot has been generated.
 '''
 
 from fpdf import FPDF
+import os
 
 class SingleDayPDF(FPDF):
     def __init__(self):
@@ -15,11 +16,23 @@ class SingleDayPDF(FPDF):
         # Custom logo and positioning
         # Create an `assets` folder and put any wide and short image inside
         # Name the image `logo.png`
+
+        # Check the name of the current folder. Navigate to the place where the logo is accessible.
+        if os.path.basename(os.getcwd()) == "dist":
+            path_parent = os.path.dirname(os.getcwd())
+            print("Changing directories to {}".format(path_parent))
+            os.chdir(path_parent)
+        elif os.path.basename(os.getcwd()) == "AirQualityApp":
+            print("Currently in AirQualityApp directory")
+
         self.image('assets/RockwellFullLogo.png', 10, 8, 33)
         self.set_font('Arial', 'B', 11)
         self.cell(self.WIDTH - 80)
         self.cell(60, 1, 'Styrene Report', 0, 0, 'R')
         self.ln(20)
+
+        # # Go back to the dist folder
+        # os.chdir("dist")
 
     def footer(self):
         # Page numbers in the footer
@@ -33,8 +46,8 @@ class SingleDayPDF(FPDF):
         datetext = "Date:\t{}".format(str(date))
         timetext = "Time:\t{}-{}".format(tstart, tend)
         employeetext = "Employee:\t{}".format(employee)
-        twatext = "TWA:\t{}".format(twa)
-        peaktext = "Peak:\t{}".format(peak)
+        twatext = "TWA:\t{} ppm".format(twa)
+        peaktext = "Peak:\t{} ppm".format(peak)
 
         self.set_margins(25, 25, 25)
 
@@ -64,8 +77,15 @@ class MultiDayPDF(FPDF):
 
     def header(self):
         # Custom logo and positioning
-        # Create an `assets` folder and put any wide and short image inside
-        # Name the image `logo.png`
+
+        # Check the name of the current folder. Navigate to the place where the logo is accessible.
+        if os.path.basename(os.getcwd()) == "dist":
+            path_parent = os.path.dirname(os.getcwd())
+            print("Changing directories to {}".format(path_parent))
+            os.chdir(path_parent)
+        elif os.path.basename(os.getcwd()) == "AirQualityApp":
+            print("Currently in AirQualityApp directory")
+
         self.image('assets/RockwellFullLogo.png', 10, 8, 33)
         self.set_font('Arial', 'B', 11)
         self.cell(self.WIDTH - 80)
@@ -84,8 +104,8 @@ class MultiDayPDF(FPDF):
         datetext = "Dates:\t{}-{}".format(str(dstart), str(dend))
         timetext = "Time:\t{}-{}".format(tstart, tend)
         employeetext = "Employee:\t{}".format(employee)
-        twatext = "TWA:\t{}".format(twa)
-        peaktext = "Peak:\t{}".format(peak)
+        twatext = "TWA:\t{} ppm".format(twa)
+        peaktext = "Peak:\t{} ppm".format(peak)
 
         self.set_margins(25, 25, 25)
 
