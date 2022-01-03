@@ -29,6 +29,39 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (1000, 750)
 Window.minimum_width, Window.minimum_height = Window.size
 
+# colors = {
+#     "Green": {
+#         "50": "b8d87a",
+#         "100": "b8d87a",
+#         "200": "b8d87a",
+#         "300": "b8d87a",
+#         "400": "b8d87a",
+#         "500": "b8d87a",
+#         "600": "b8d87a",
+#         "700": "b8d87a",
+#         "800": "b8d87a",
+#         "900": "b8d87a",
+#         "A100": "b8d87a",
+#         "A200": "b8d87a",
+#         "A400": "b8d87a",
+#         "A700": "b8d87a",
+#     },
+#     "Light": {
+#         "StatusBar": "E0E0E0",
+#         "AppBar": "F5F5F5",
+#         "Background": "FAFAFA",
+#         "CardsDialogs": "FFFFFF",
+#         "FlatButtonDown": "cccccc",
+#     },
+#     "Dark": {
+#         "StatusBar": "000000",
+#         "AppBar": "212121",
+#         "Background": "303030",
+#         "CardsDialogs": "424242",
+#         "FlatButtonDown": "999999",
+#     }
+# }
+
 
 class RootScreen(MDScreen):
     pass
@@ -39,7 +72,6 @@ class HomeScreen(MDScreen):
 
 
 class AnalysisScreen(MDScreen):
-
     date = None         # Analysis date (single calendar day)
     dates = None        # Analysis dates (multiple day analysis)
     t_start = None      # Analysis start time
@@ -51,7 +83,7 @@ class AnalysisScreen(MDScreen):
     refresh_dialog = None   # Holding variable for refresh data dialog
     twa = None          # Time-weighted average over the time chosen (doesn't assume 8 hours)
     peak = None         # Maximum styrene value recorded during time range of interest
-    img_src = StringProperty('assets/test.png')
+    img_src = StringProperty('assets/Styrene-3D-balls.png')
 
     # Snackbar for showing status messages (better than allocating space to labels)
     def snackbar_show(self, snackbartext):
@@ -71,7 +103,8 @@ class AnalysisScreen(MDScreen):
     def show_refresh_dialog(self, *args):
         theme_cls = ThemeManager()
         theme_cls.theme_style = "Light"
-        theme_cls.primary_palette = "Green"
+        theme_cls.primary_palette = "LightGreen"
+        theme_cls.primary_hue = "400"
 
         if not self.refresh_dialog:
             self.refresh_dialog = MDDialog(
@@ -117,7 +150,8 @@ class AnalysisScreen(MDScreen):
     def show_time_dialog(self, *args):
         theme_cls = ThemeManager()
         theme_cls.theme_style = "Light"
-        theme_cls.primary_palette = "Green"
+        theme_cls.primary_palette = "LightGreen"
+        theme_cls.primary_hue = "400"
 
         if not self.time_range_dialog:
             self.time_range_dialog = MDDialog(
@@ -238,8 +272,10 @@ class AnalysisScreen(MDScreen):
             tendstr = tendstr.replace(":", "")
             pdfname = str(self.date) + "_{}-{}_Styrene_Report.pdf".format(tstartstr,tendstr)
             generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, employee, pdfname, exportdirectory)
-            print("PDF report generated for single day")
-            print("Look for {} in {}".format(pdfname, exportdirectory))
+            # print("PDF report generated for single day")
+            # print("Look for {} in {}".format(pdfname, exportdirectory))
+            self.show_export_dialog()
+
 
         elif self.dates and not self.date and self.t_start and self.t_end:
             tstartstr = str(self.t_start)
@@ -250,12 +286,35 @@ class AnalysisScreen(MDScreen):
             tendstr = tendstr.replace(":", "")
             pdfname = "{}_{}_{}-{}_Styrene_Report.pdf".format(str(min(self.dates)), str(max(self.dates)), tstartstr, tendstr)
             generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, employee, pdfname, exportdirectory)
-            print("PDF report generated for multiple dates")
-            print("Look for {} in {}".format(pdfname, exportdirectory))
+            # print("PDF report generated for multiple dates")
+            # print("Look for {} in {}".format(pdfname, exportdirectory))
+            self.show_export_dialog()
         elif not self.date and not self.dates:
             self.snackbar_show("Missing date(s). Unable to export data.")
         else:
             self.snackbar_show("Missing time range. Unable to export data.")
+
+    def show_export_dialog(self, *args):
+        theme_cls = ThemeManager()
+        theme_cls.theme_style = "Light"
+        theme_cls.primary_palette = "LightGreen"
+        theme_cls.primary_hue = "400"
+
+        if not self.export_dialog:
+            self.export_dialog = MDDialog(
+                title="Data Export Complete",
+                buttons=[
+                    MDFlatButton(
+                        text="OK",
+                        font_style="Button",
+                        on_release=self.close_export_dialog
+                    ),
+                ],
+            )
+        self.export_dialog.open()
+
+    def close_export_dialog(self, *args):
+        self.export_dialog.dismiss(force=True)
 
 
 class SettingsScreen(MDScreen):
@@ -341,9 +400,11 @@ class AirQualityApp(MDApp):
 
     def build(self):
         # App settings
+        # self.theme_cls.colors = colors
         self.theme_cls.theme_style = "Light"
-        self.theme_cls.primary_palette = "Green"
-        # self.theme_cls.accent_palette = "Green"
+        self.theme_cls.primary_palette = "LightGreen"
+        self.theme_cls.primary_hue = "400"
+        self.theme_cls.accent_palette = "Amber"
         self.title = "Styrene Analysis Tool"
         self.icon = "assets/RWLettermark.png"
 

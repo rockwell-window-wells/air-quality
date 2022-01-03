@@ -70,7 +70,7 @@ KV = '''
                     id: singledaytitle
                     text: "Analysis"
                     font_style: "H5"
-                    pos_hint: {"top": 0.75, "x": 0.01}
+                    pos_hint: {"top": 0.7, "x": 0.01}
 
 
             AnchorLayout:
@@ -172,7 +172,7 @@ KV = '''
                     id: plotsingle
                     size_hint_y: 4.5
                     pos_hint: {"top": 1, "x": 0.0}
-                    md_bg_color: app.theme_cls.accent_color
+                    # md_bg_color: app.theme_cls.accent_color
 
                     # Put the chart here
                     FitImage:
