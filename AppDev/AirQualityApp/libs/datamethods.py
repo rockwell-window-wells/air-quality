@@ -319,7 +319,7 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
     while os.path.exists(directory + f"/plot{i}.png"):
         i += 1
     plotname = directory + "/plot{}.png".format(i)
-    plt.savefig(plotname)
+    plt.savefig(plotname, dpi=300)
     plt.close()
 
     return twa, peak, ste, plotname
