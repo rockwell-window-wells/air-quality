@@ -103,8 +103,8 @@ class MultiDayPDF(FPDF):
         self.cell(0, 5, 'Page ' + str(self.page_no()), 0, 0, 'C')
 
     def page_body(self, dstart, dend, tstart, tend, plot, twa, peak, ste, employee):
-        datetext = "Dates:\t{}-{}".format(str(dstart), str(dend))
-        timetext = "Time:\t{}-{}".format(tstart, tend)
+        starttext = "Start:\t{} at {}".format(str(dstart), tstart)
+        endtext = "End:\t{} at {}".format(str(dend), tend)
         employeetext = "Employee:\t{}".format(employee)
         twatext = "TWA:\t{} ppm".format(twa)
         peaktext = "Peak:\t{} ppm".format(peak)
@@ -117,8 +117,8 @@ class MultiDayPDF(FPDF):
         self.set_font('Arial', 'B', 12)
         self.cell(40, 6, "Metrics:", 0, 1, 'L')
         self.set_font('Arial', '', 11)
-        self.cell(40, 6, datetext, 0, 1, 'L')
-        self.cell(40, 6, timetext, 0, 1, 'L')
+        self.cell(40, 6, starttext, 0, 1, 'L')
+        self.cell(40, 6, endtext, 0, 1, 'L')
         self.cell(40, 6, employeetext, 0, 1, 'L')
         self.cell(40, 6, twatext, 0, 1, 'L')
         self.cell(40, 6, peaktext, 0, 1, 'L')
