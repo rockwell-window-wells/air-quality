@@ -251,14 +251,36 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
                         data .txt files, as well as the "By Day" folder and the
                         LOGGED.csv and PROCESSED.csv files.
     """
+    # Calculate the peak PPM in the time range
     peak = measdata_window["Styrene"].max()
+    peakidx = measdata_window["Styrene"].idxmax()
+    peaklabel = "Peak: {} ppm".format(peak)
 
+    # Calculate the time weighted average styrene value over the data
     twasum = measdata_window["Styrene"].sum()
-    # twatime = measdata_window["DateTime"].max() - measdata_window["DateTime"].min() # This underestimates TWA for periods where there is no data.
-    # twatime = twatime.total_seconds()
-    twatime = np.sum(measdata_window["Styrene"].count()) # This assumes the datalogger is always in seconds
+    twatime = np.sum(measdata_window["Styrene"].count()) # This assumes the datalogger is always in seconds (don't change that!)
     twa = twasum/twatime
     twa = np.around(twa,1)
+    twalabel = "TWA: {} ppm".format(twa)
+
+    # Calculate maximum short term exposure (STE) over a range of 15 minutes
+    npts = 15*60    # 15 minute window
+    t0ind = 0
+    t1ind = npts - 1
+    ste = 0.0
+    while t1ind <= len(measdata_window):
+        stetemp = measdata_window.iloc[t0ind:t1ind]["Styrene"].sum()
+        if stetemp > ste:
+            ste = stetemp
+            steind0 = t0ind
+            steind1 = t1ind
+        t0ind += 1
+        t1ind += 1
+
+    ste = np.around(ste/npts,1)  # Time weight the STE value
+    stelabel = "STE: {} ppm".format(ste)
+
+    datalabel = twalabel + "\n" + peaklabel + "\n" + stelabel
 
     fig, ax = plt.subplots(figsize=(10,8))
     ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
@@ -266,6 +288,13 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
     if annotations is True:
         twaline = twa*np.ones(len(measdata_window["Styrene"]))
         ax.plot(measdata_window["DateTime"], twaline, label="TWA")
+        ax.axvline(x=measdata_window.iloc[steind0]["DateTime"], color='m', label="Highest STE")
+        ax.axvline(x=measdata_window.iloc[steind1]["DateTime"], color='m')
+
+        # Label the TWA value and the peak value
+        ax.annotate(datalabel, (measdata_window.iloc[0]["DateTime"], (8/10)*peak),
+            (measdata_window.iloc[0]["DateTime"], (8/10)*peak))
+
         ax.legend()
     ax.set_title("Measured Styrene Level")
     ax.set_xlabel("Date and Time")
