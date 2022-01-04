@@ -1,6 +1,7 @@
 KV = '''
 <HomeScreen>:
     name: "homescreen"
+    id: home_screen
 
     MDBoxLayout:
         # md_bg_color: app.theme_cls.primary_color
@@ -33,6 +34,7 @@ KV = '''
                         font_style: "Button"
                         elevation: 5
                         # pos_hint: {"top": 1, "right": 1.0}
+                        on_release: root.translate_en()
 
                 AnchorLayout:
                     anchor_x: "center"
@@ -43,14 +45,18 @@ KV = '''
                         font_style: "Button"
                         elevation: 5
                         pos_hint: {"top": 1, "right": 1.0}
+                        on_release: root.translate_esp()
+
 
 <AnalysisScreen>:
     name: "analysisscreen"
+    id: analysis_screen
     # singleday_status: singleday_status
     plotsingle: plotsingle
     annotatevalues: annotatevalues
     annotatelines: annotatelines
     employeename: employeename
+    analysistitle: analysistitle
 
     MDGridLayout:
         cols: 2
@@ -68,8 +74,8 @@ KV = '''
             MDFloatLayout:
 
                 MDLabel:
-                    id: singledaytitle
-                    text: "Analysis"
+                    id: analysistitle
+                    text: app.analysis_title
                     font_style: "H5"
                     pos_hint: {"top": 0.6, "x": 0.01}
 
@@ -80,7 +86,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: refreshdata_single
-                    text: "Refresh Data"
+                    text: app.refresh_data_label
                     font_style: "Button"
                     # pos_hint: {"top": 0.5, "right": 0.5}
                     on_release:
@@ -92,7 +98,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: choosedate_single
-                    text: "Single Day"
+                    text: app.single_day_label
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
@@ -104,7 +110,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: choosedate_single
-                    text: "Multiple Dates"
+                    text: app.multi_day_label
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
@@ -116,7 +122,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: timerange_single
-                    text: "Time Range"
+                    text: app.time_range_label
                     font_style: "Button"
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
@@ -128,7 +134,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: calculate
-                    text: "Calculate"
+                    text: app.calculate_label
                     font_style: "Button"
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
@@ -142,7 +148,7 @@ KV = '''
 
                 MDRaisedButton:
                     id: export_single
-                    text: "Export"
+                    text: app.export_label
                     font_style: "Button"
                     md_bg_color: app.theme_cls.accent_color
                     pos_hint: {"top": 0.5, "right": 0.5}
@@ -160,7 +166,7 @@ KV = '''
                     active: True
 
                 MDLabel:
-                    text: "Annotate Values"
+                    text: app.annotate_vals_label
 
             MDBoxLayout:
                 orientation: "horizontal"
@@ -171,7 +177,7 @@ KV = '''
                     active: True
 
                 MDLabel:
-                    text: "Annotate Lines"
+                    text: app.annotate_lines_label
 
         MDFloatLayout:
 
@@ -193,7 +199,7 @@ KV = '''
 
                 MDTextField:
                     id: employeename
-                    hint_text:"Employee wearing PAC 8000"
+                    hint_text: app.employee_hint_label
                     pos_hint: {"top": 1}
 
                 MDTextField:
@@ -213,7 +219,7 @@ KV = '''
 
             MDLabel:
                 id: settingstitle
-                text: "Settings"
+                text: app.settings_title
                 font_style: "H5"
                 pos_hint: {"top": 0.75, "x": 0.01}
 
@@ -224,11 +230,11 @@ KV = '''
 
             MDTextField:
                 id: datafolderpath
-                hint_text:"Data folder path"
+                hint_text: app.data_folder_label
                 pos_hint: {"bottom": 0.35}
 
             MDRaisedButton:
-                text: "Set"
+                text: app.set_btn_label
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"bottom": 0.35}
@@ -237,7 +243,7 @@ KV = '''
                     datafolderpath.text = ""
 
             MDRectangleFlatButton:
-                text: "Reset"
+                text: app.reset_btn_label
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"bottom": 0.35}
@@ -256,11 +262,11 @@ KV = '''
 
             MDTextField:
                 id: exportfolderpath
-                hint_text:"Export folder path"
+                hint_text: app.export_folder_label
                 pos_hint: {"top": 0.75}
 
             MDRaisedButton:
-                text: "Set"
+                text: app.set_btn_label
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"top": 0.75}
@@ -269,7 +275,7 @@ KV = '''
                     exportfolderpath.text = ""
 
             MDRectangleFlatButton:
-                text: "Reset"
+                text: app.reset_btn_label
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"top": 0.75}
@@ -315,21 +321,21 @@ KV = '''
             id: md_list
 
             ItemDrawer:
-                text: "Home"
+                text: app.home_title
                 icon: "home"
                 on_press:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "homescreen"
 
             ItemDrawer:
-                text: "Analysis"
+                text: app.analysis_title
                 icon: "chart-line"
                 on_press:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "analysisscreen"
 
             ItemDrawer:
-                text: "Settings"
+                text: app.settings_title
                 icon: "cog"
                 on_press:
                     root.nav_drawer.set_state("close")
@@ -337,16 +343,18 @@ KV = '''
 
 
 RootScreen:
+    id: root_screen
 
     MDToolbar:
         id: toolbar
         pos_hint: {"top": 1}
         elevation: 10
-        title: "Navigation"
+        title: app.navigation_title
         left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
 
 
     MDNavigationLayout:
+        id: navigation_layout
 
         ScreenManager:
             id: screen_manager

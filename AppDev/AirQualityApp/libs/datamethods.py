@@ -105,7 +105,7 @@ def refresh_data(data_directory):
     except pd.errors.EmptyDataError:
         print("PROCESSED.csv is empty\n")
 
-    pnamepattern = "ARPL-1307_PAC 8000*.pkl"
+    pnamepattern = "*PAC 8000*.pkl"
     pfilepattern = directory + "\\" + pnamepattern
 
     for file in glob.glob(pfilepattern):
@@ -219,11 +219,16 @@ def prepare_data(dstart, dend, tstart, tend, directory):
 
     else:
         print("Data is from a single day")
+        column_names = ["EventType","DateTime","Date","Time","Styrene"]
 
         pklname = str(dstart) + "_Styrene.pkl"
         pklfile = directory + "\\By Day\\" + pklname
 
-        measdata = pd.read_pickle(pklfile)    # Read the PKL data in to a DataFrame
+        if exists(pklfile):
+            measdata = pd.read_pickle(pklfile)    # Read the PKL data in to a DataFrame
+        else:
+            print("ERROR: No data for chosen date and times.")
+            measdata = pd.DataFrame(columns = column_names)
 
 
     # Filter data to show only readings between two datetimes

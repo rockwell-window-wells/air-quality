@@ -45,7 +45,77 @@ class RootScreen(MDScreen):
 
 
 class HomeScreen(MDScreen):
-    pass
+    def translate_en(self):
+        app.english = True
+        app.home_title = app.home_title_en
+        app.analysis_title = app.analysis_title_en
+        app.settings_title = app.settings_title_en
+        app.navigation_title = app.navigation_title_en
+        app.refresh_data_label = app.refresh_data_en
+        app.single_day_label = app.single_day_en
+        app.multi_day_label = app.multi_day_en
+        app.time_range_label = app.time_range_en
+        app.calculate_label = app.calculate_en
+        app.export_label = app.export_en
+        app.annotate_vals_label = app.annotate_vals_en
+        app.annotate_lines_label = app.annotate_lines_en
+        app.employee_hint_label = app.employee_hint_en
+        app.refresh_dialog_title_label = app.refresh_dialog_title_en
+        app.refresh_dialog_text_label = app.refresh_dialog_text_en
+        app.time_range_dialog_title_label = app.time_range_dialog_title_en
+        app.time_range_dialog_start_label = app.time_range_dialog_start_en
+        app.time_range_dialog_end_label = app.time_range_dialog_end_en
+        app.clear_btn_label = app.clear_btn_en
+        app.cancel_btn_label = app.cancel_btn_en
+        app.export_dialog_title_label = app.export_dialog_title_en
+
+
+        app.settings_title = app.settings_title_en
+        app.set_btn_label = app.set_btn_en
+        app.reset_btn_label = app.reset_btn_en
+        app.data_folder_label = app.data_folder_en
+        app.export_folder_label = app.export_folder_en
+
+        self.snackbar_show("Language changed to English")
+
+    def translate_esp(self):
+        app.english = False
+        app.home_title = app.home_title_esp
+        app.analysis_title = app.analysis_title_esp
+        app.settings_title = app.settings_title_esp
+        app.navigation_title = app.navigation_title_esp
+        app.refresh_data_label = app.refresh_data_esp
+        app.single_day_label = app.single_day_esp
+        app.multi_day_label = app.multi_day_esp
+        app.time_range_label = app.time_range_esp
+        app.calculate_label = app.calculate_esp
+        app.export_label = app.export_esp
+        app.annotate_vals_label = app.annotate_vals_esp
+        app.annotate_lines_label = app.annotate_lines_esp
+        app.employee_hint_label = app.employee_hint_esp
+        app.refresh_dialog_title_label = app.refresh_dialog_title_esp
+        app.refresh_dialog_text_label = app.refresh_dialog_text_esp
+        app.time_range_dialog_title_label = app.time_range_dialog_title_esp
+        app.time_range_dialog_start_label = app.time_range_dialog_start_esp
+        app.time_range_dialog_end_label = app.time_range_dialog_end_esp
+        app.clear_btn_label = app.clear_btn_esp
+        app.cancel_btn_label = app.cancel_btn_esp
+        app.export_dialog_title_label = app.export_dialog_title_esp
+
+
+        app.settings_title = app.settings_title_esp
+        app.set_btn_label = app.set_btn_esp
+        app.reset_btn_label = app.reset_btn_esp
+        app.data_folder_label = app.data_folder_esp
+        app.export_folder_label = app.export_folder_esp
+
+        self.snackbar_show("Idioma cambiado a Espa\u00F1ol")
+
+
+    # Snackbar for showing status messages (better than allocating space to labels)
+    def snackbar_show(self, snackbartext):
+        self.snackbar = Snackbar(text = snackbartext)
+        self.snackbar.open()
 
 
 class AnalysisScreen(MDScreen):
@@ -87,8 +157,8 @@ class AnalysisScreen(MDScreen):
 
         if not self.refresh_dialog:
             self.refresh_dialog = MDDialog(
-                title="Data Refresh Complete",
-                text="All raw data has been prepared for use.",
+                title= app.refresh_dialog_title_label,
+                text= app.refresh_dialog_text_label,
                 buttons=[
                     MDFlatButton(
                         text="OK",
@@ -134,33 +204,33 @@ class AnalysisScreen(MDScreen):
 
         if not self.time_range_dialog:
             self.time_range_dialog = MDDialog(
-                title="Set Time Range",
+                title=app.time_range_dialog_title_label,
                 buttons=[
                     MDRaisedButton(
-                        text="Start Time",
+                        text=app.time_range_dialog_start_label,
                         font_style="Button",
                         on_release=self.show_start_time_picker
                     ),
                     MDRaisedButton(
-                        text="End Time",
+                        text=app.time_range_dialog_end_label,
                         font_style="Button",
                         on_release=self.show_end_time_picker
                     ),
                     MDRaisedButton(
-                        text="Set",
+                        text=app.set_btn_label,
                         font_style="Button",
                         md_bg_color=theme_cls.accent_color,
                         on_release=self.set_time_dialog
                     ),
                     MDFlatButton(
-                        text="Clear",
+                        text=app.clear_btn_label,
                         font_style="Button",
                         theme_text_color="Custom",
                         text_color=theme_cls.primary_color,
                         on_release=self.clear_time_dialog
                     ),
                     MDFlatButton(
-                        text="Cancel",
+                        text=app.cancel_btn_label,
                         font_style="Button",
                         theme_text_color="Custom",
                         text_color=theme_cls.primary_color,
@@ -173,21 +243,33 @@ class AnalysisScreen(MDScreen):
     def set_time_dialog(self, *args):
         self.time_range_dialog.dismiss(force=True)
         if not self.t_start or not self.t_end:
-            statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
+            if app.english is True:
+                statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
+            else:
+                statustext = "FALTA RANGO DE TIEMPO. Elija un intervalo de tiempo antes de ejecutar el an\u00E1lisis."
         else:
-            statustext = "TIME RANGE SET: {} to {}".format(self.t_start, self.t_end)
+            if app.english is True:
+                statustext = "TIME RANGE SET: {} to {}".format(self.t_start, self.t_end)
+            else:
+                statustext = "SE HA FIJADO EL RANGO DE TIEMPO: {} to {}".format(self.t_start, self.t_end)
         self.snackbar_show(statustext)
 
     def clear_time_dialog(self, *args):
         self.t_start = None
         self.t_end = None
-        statustext = "TIME RANGE CLEARED. Please choose time range before running analysis."
+        if app.english is True:
+            statustext = "TIME RANGE CLEARED. Please choose time range before running analysis."
+        else:
+            statustext = "RANGO DE TIEMPO BORRADO. Elija un intervalo de tiempo antes de ejecutar el an\u00E1lisis."
         self.snackbar_show(statustext)
 
     def cancel_time_dialog(self, *args):
         self.time_range_dialog.dismiss(force=True)
         if not self.t_start or not self.t_end:
-            statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
+            if app.english is True:
+                statustext = "MISSING TIME RANGE. Please choose time range before running analysis."
+            else:
+                statustext = "FALTA RANGO DE TIEMPO. Elija un intervalo de tiempo antes de ejecutar el an\u00E1lisis."
             self.snackbar_show(statustext)
 
     def show_start_time_picker(self, *args):
@@ -216,62 +298,101 @@ class AnalysisScreen(MDScreen):
         if self.date and self.t_start and self.t_end:
             measdata_window, self.dt_start, self.dt_end = prepare_data(self.date, self.date, self.t_start, self.t_end, directory)
             if measdata_window.empty:
-                print('ERROR: No data for chosen date and times.')
+                # print("ERROR: No data for chosen date and times.")
+                if app.english is True:
+                    self.snackbar_show("ERROR: No data for chosen date and times.")
+                else:
+                    self.snackbar_show("ERROR: No hay datos para la fecha y hora elegidas.")
             else:
                 self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
+                app.plotready = True
 
-                print("TWA: {} ppm".format(self.twa))
-                print("Peak: {} ppm".format(self.peak))
+                # print("TWA: {} ppm".format(self.twa))
+                # print("Peak: {} ppm".format(self.peak))
 
         # If the data is from multiple dates and the time range is chosen:
         elif self.dates and self.t_start and self.t_end:
             measdata_window, self.dt_start, self.dt_end = prepare_data(min(self.dates), max(self.dates), self.t_start, self.t_end, directory)
             if measdata_window.empty:
-                print('ERROR: No data for chosen date range and times.')
+                app.gooddata = False
+                # print('ERROR: No data for chosen date range and times.')
+                if app.english is True:
+                    self.snackbar_show("ERROR: No data for chosen dates and times.")
+                else:
+                    self.snackbar_show("ERROR: No hay datos para las fechas y horas elegidas.")
             else:
+                app.gooddata = True
                 self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
+                app.plotready = True
 
-                print("TWA: {} ppm".format(self.twa))
-                print("Peak: {} ppm".format(self.peak))
+                # print("TWA: {} ppm".format(self.twa))
+                # print("Peak: {} ppm".format(self.peak))
 
         elif not self.date and not self.dates:
-            self.snackbar_show("Missing date(s). Unable to generate plot.")
+            if app.english is True:
+                self.snackbar_show("Missing date(s). Unable to generate plot.")
+            else:
+                self.snackbar_show("Falta la (s) fecha (s). No se pudo generar la trama.")
         else:
-            self.snackbar_show("Missing times. Unable to generate plot.")
+            if app.english is True:
+                self.snackbar_show("Missing times. Unable to generate plot.")
+            else:
+                self.snackbar_show("Tiempos perdidos. No se pudo generar la trama.")
 
     ### Functions for exporting the analysis to a PDF ###
     def export(self, exportdirectory, plot, employee):
-        # If the data is for a single day:
-        if self.date and not self.dates and self.t_start and self.t_end:
-            tstartstr = str(self.t_start)
-            tstartstr = tstartstr[0:-3]
-            tstartstr = tstartstr.replace(":", "")
-            tendstr = str(self.t_end)
-            tendstr = tendstr[0:-3]
-            tendstr = tendstr.replace(":", "")
-            pdfname = str(self.date) + "_{}-{}_Styrene_Report.pdf".format(tstartstr,tendstr)
-            generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
-            # print("PDF report generated for single day")
-            # print("Look for {} in {}".format(pdfname, exportdirectory))
-            self.show_export_dialog()
+        if app.gooddata is True and app.plotready is True:
+
+            # If the data is for a single day:
+            if self.date and not self.dates and self.t_start and self.t_end:
+                tstartstr = str(self.t_start)
+                tstartstr = tstartstr[0:-3]
+                tstartstr = tstartstr.replace(":", "")
+                tendstr = str(self.t_end)
+                tendstr = tendstr[0:-3]
+                tendstr = tendstr.replace(":", "")
+                pdfname = str(self.date) + "_{}-{}_Styrene_Report.pdf".format(tstartstr,tendstr)
+                generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
+                # print("PDF report generated for single day")
+                # print("Look for {} in {}".format(pdfname, exportdirectory))
+                self.show_export_dialog()
 
 
-        elif self.dates and not self.date and self.t_start and self.t_end:
-            tstartstr = str(self.t_start)
-            tstartstr = tstartstr[0:-3]
-            tstartstr = tstartstr.replace(":", "")
-            tendstr = str(self.t_end)
-            tendstr = tendstr[0:-3]
-            tendstr = tendstr.replace(":", "")
-            pdfname = "{}_{}_{}-{}_Styrene_Report.pdf".format(str(min(self.dates)), str(max(self.dates)), tstartstr, tendstr)
-            generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
-            # print("PDF report generated for multiple dates")
-            # print("Look for {} in {}".format(pdfname, exportdirectory))
-            self.show_export_dialog()
-        elif not self.date and not self.dates:
-            self.snackbar_show("Missing date(s). Unable to export data.")
+            elif self.dates and not self.date and self.t_start and self.t_end:
+                tstartstr = str(self.t_start)
+                tstartstr = tstartstr[0:-3]
+                tstartstr = tstartstr.replace(":", "")
+                tendstr = str(self.t_end)
+                tendstr = tendstr[0:-3]
+                tendstr = tendstr.replace(":", "")
+                pdfname = "{}_{}_{}-{}_Styrene_Report.pdf".format(str(min(self.dates)), str(max(self.dates)), tstartstr, tendstr)
+                generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
+                # print("PDF report generated for multiple dates")
+                # print("Look for {} in {}".format(pdfname, exportdirectory))
+                self.show_export_dialog()
+
+            elif not self.date and not self.dates:
+                if app.english is True:
+                    self.snackbar_show("Missing date(s). Unable to generate plot.")
+                else:
+                    self.snackbar_show("Falta la (s) fecha (s). No se pudo generar la trama.")
+            else:
+                if app.english is True:
+                    self.snackbar_show("Missing times. Unable to generate plot.")
+                else:
+                    self.snackbar_show("Tiempos perdidos. No se pudo generar la trama.")
+
+        elif app.gooddata is True and app.plotready is False:
+            if app.english is True:
+                self.snackbar_show("ERROR: Data has not been plotted.")
+            else:
+                self.snackbar_show("ERROR: Los datos no se han representado gr\u00E1ficamente.")
+
         else:
-            self.snackbar_show("Missing time range. Unable to export data.")
+            if app.english is True:
+                self.snackbar_show("ERROR: No data for chosen dates and times.")
+            else:
+                self.snackbar_show("ERROR: No hay datos para las fechas y horas elegidas.")
 
     def show_export_dialog(self, *args):
         theme_cls = ThemeManager()
@@ -281,7 +402,7 @@ class AnalysisScreen(MDScreen):
 
         if not self.export_dialog:
             self.export_dialog = MDDialog(
-                title="Data Export Complete",
+                title=app.export_dialog_title_label,
                 buttons=[
                     MDFlatButton(
                         text="OK",
@@ -306,14 +427,20 @@ class SettingsScreen(MDScreen):
     def set_datafolder(self, newfolder):
         # Add a check here to verify that newfolder is a valid folder path string
         self.datafolder = newfolder
-        statustext = "Data folder changed to {}".format(self.datafolder)
+        if app.english is True:
+            statustext = "Data folder changed to {}".format(self.datafolder)
+        else:
+            statustext = "La carpeta de datos cambi\u00F3 a {}".format(self.datafolder)
         self.snackbar_show(statustext)
         # self.datafolderlabel.text = "Data folder changed to: " + self.datafolder
         print(self.datafolder)
 
     def reset_datafolder(self, defaultfolder):
         self.datafolder = defaultfolder
-        statustext = "Data folder reset to {}".format(self.datafolder)
+        if app.english is True:
+            statustext = "Data folder reset to {}".format(self.datafolder)
+        else:
+            statustext = "Carpeta de datos restablecida a {}".format(self.datafolder)
         self.snackbar_show(statustext)
         # self.datafolderlabel.text = "Data folder reset to: " + self.datafolder
         print(self.datafolder)
@@ -321,14 +448,20 @@ class SettingsScreen(MDScreen):
     def set_exportfolder(self, newfolder):
         # Add a check here to verify that newfolder is a valid folder path string
         self.exportfolder = newfolder
-        statustext = "Export folder changed to {}".format(self.datafolder)
+        if app.english is True:
+            statustext = "Export folder changed to {}".format(self.datafolder)
+        else:
+            statustext = "La carpeta de exportaci\u00F3n cambi\u00F3 a {}".format(self.datafolder)
         self.snackbar_show(statustext)
         # self.exportfolderlabel.text = "Export folder changed to: " + self.exportfolder
         # print(self.exportfolder)
 
     def reset_exportfolder(self, defaultfolder):
         self.exportfolder = defaultfolder
-        statustext = "Export folder reset to {}".format(self.datafolder)
+        if app.english is True:
+            statustext = "Export folder reset to {}".format(self.datafolder)
+        else:
+            statustext = "Exportar carpeta restablecida a {}".format(self.datafolder)
         self.snackbar_show(statustext)
         # self.exportfolderlabel.text = "Export folder reset to: " + self.exportfolder
         print(self.exportfolder)
@@ -357,7 +490,7 @@ class DrawerList(ThemableBehavior, MDList):
 
 class AirQualityApp(MDApp):
     # Global settings
-    globalstring = StringProperty('testing, testing.....')
+    # globalstring = StringProperty('testing, testing.....')
     directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
     export_directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
     datafolder_default = StringProperty(directory)
@@ -376,6 +509,97 @@ class AirQualityApp(MDApp):
     pnamepattern = StringProperty(pnamepatternstr)
     pfilepatternstr = directory + "/" + pnamepatternstr
     pfilepattern = StringProperty(pfilepatternstr)
+
+    ### Labels in English ###
+    home_title_en = "Home"
+    analysis_title_en = "Analysis"
+    navigation_title_en = "Navigation"
+    refresh_data_en = "Refresh Data"
+    single_day_en = "Single Day"
+    multi_day_en = "Multiple Dates"
+    time_range_en = "Time Range"
+    calculate_en = "Calculate"
+    export_en = "Export"
+    annotate_vals_en = "Annotate Values"
+    annotate_lines_en = "Annotate Lines"
+    employee_hint_en = "Employee wearing PAC 8000"
+    refresh_dialog_title_en = "Data Refresh Complete"
+    refresh_dialog_text_en = "All raw data has been prepared for use."
+    time_range_dialog_title_en = "Set Time Range"
+    time_range_dialog_start_en = "Start Time"
+    time_range_dialog_end_en = "End Time"
+    clear_btn_en = "Clear"
+    cancel_btn_en = "Cancel"
+    export_dialog_title_en = "Data Export Complete"
+
+    settings_title_en = "Settings"
+    set_btn_en = "Set"
+    reset_btn_en = "Reset"
+    data_folder_en = "Data folder path"
+    export_folder_en = "Export folder path"
+
+    ### Labels in Spanish ###
+    home_title_esp = "Inicio"
+    analysis_title_esp = "An\u00E1lisis"
+    navigation_title_esp = "Navegaci\u00F3n"
+    refresh_data_esp = "Actualizar datos"
+    single_day_esp = "Fecha \u00FAnica"
+    multi_day_esp = "Fechas multiples"
+    time_range_esp = "Intervalo de tiempo"
+    calculate_esp = "Calcular"
+    export_esp = "Exportar"
+    annotate_vals_esp = "Anotar Valores"
+    annotate_lines_esp = "Anotar L\u00EDneas"
+    employee_hint_esp = "Empleado que lleva el PAC 8000"
+    refresh_dialog_title_esp = "Actualizaci\u00F3n de Datos Completa"
+    refresh_dialog_text_esp = "Todos los datos brutos se han preparado para su uso."
+    time_range_dialog_title_esp = "Establecer Rango de Tiempo"
+    time_range_dialog_start_esp = "Inicio"
+    time_range_dialog_end_esp = "Finalizaci\u00F3n"
+    clear_btn_esp = "Limpiar"
+    cancel_btn_esp = "Cancelar"
+    export_dialog_title_esp = "Exportaci\u00F3n de datos completa"
+
+
+    settings_title_esp  = "Ajustes"
+    set_btn_esp = "Establecer"
+    reset_btn_esp = "Reiniciar"
+    data_folder_esp = "Ruta de la carpeta de datos"
+    export_folder_esp = "Ruta de la carpeta de exportaci\u00F3n"
+
+    ### Reference variables for text labels ###
+    home_title = StringProperty(home_title_en)
+    analysis_title = StringProperty(analysis_title_en)
+    navigation_title = StringProperty(navigation_title_en)
+    refresh_data_label = StringProperty(refresh_data_en)
+    single_day_label = StringProperty(single_day_en)
+    multi_day_label = StringProperty(multi_day_en)
+    time_range_label = StringProperty(time_range_en)
+    calculate_label = StringProperty(calculate_en)
+    export_label = StringProperty(export_en)
+    annotate_vals_label = StringProperty(annotate_vals_en)
+    annotate_lines_label = StringProperty(annotate_lines_en)
+    employee_hint_label = StringProperty(employee_hint_en)
+    refresh_dialog_title_label = StringProperty(refresh_dialog_title_en)
+    refresh_dialog_text_label = StringProperty(refresh_dialog_text_en)
+    time_range_dialog_title_label = StringProperty(time_range_dialog_title_en)
+    time_range_dialog_start_label = StringProperty(time_range_dialog_start_en)
+    time_range_dialog_end_label = StringProperty(time_range_dialog_end_en)
+    clear_btn_label = StringProperty(clear_btn_en)
+    cancel_btn_label = StringProperty(cancel_btn_en)
+    export_dialog_title_label = StringProperty(export_dialog_title_en)
+
+
+    settings_title = StringProperty(settings_title_en)
+    set_btn_label = StringProperty(set_btn_en)
+    reset_btn_label = StringProperty(reset_btn_en)
+    data_folder_label = StringProperty(data_folder_en)
+    export_folder_label = StringProperty(export_folder_en)
+
+    english = True
+    gooddata = False
+    plotready = False
+
 
     def build(self):
         # App settings
