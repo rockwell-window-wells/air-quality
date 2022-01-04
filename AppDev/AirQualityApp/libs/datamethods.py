@@ -311,7 +311,7 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
 
     if valueannotations is True:
         # Label the TWA value and the peak value
-        ypos = (9/10)*(peak-min) + min
+        ypos = (8/10)*(peak-min) + min
         ax.annotate(datalabel, (measdata_window.iloc[0]["DateTime"], ypos),
         (measdata_window.iloc[0]["DateTime"], ypos))
 

@@ -252,6 +252,12 @@ class AnalysisScreen(MDScreen):
                 statustext = "TIME RANGE SET: {} to {}".format(self.t_start, self.t_end)
             else:
                 statustext = "SE HA FIJADO EL RANGO DE TIEMPO: {} to {}".format(self.t_start, self.t_end)
+        if self.date and (self.t_start >= self.t_end):
+            if app.english is True:
+                statustext = "ERROR: Start time is later than end time."
+            else:
+                statustext = "ERROR: La hora de inicio es posterior a la hora de finalizaci\u00F3n."
+
         self.snackbar_show(statustext)
 
     def clear_time_dialog(self, *args):
@@ -304,8 +310,10 @@ class AnalysisScreen(MDScreen):
                 else:
                     self.snackbar_show("ERROR: No hay datos para la fecha y hora elegidas.")
             else:
+                app.gooddata = True
                 self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
                 app.plotready = True
+                print(app.plotready)
 
                 # print("TWA: {} ppm".format(self.twa))
                 # print("Peak: {} ppm".format(self.peak))
@@ -324,6 +332,7 @@ class AnalysisScreen(MDScreen):
                 app.gooddata = True
                 self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
                 app.plotready = True
+                print(app.plotready)
 
                 # print("TWA: {} ppm".format(self.twa))
                 # print("Peak: {} ppm".format(self.peak))
@@ -342,6 +351,7 @@ class AnalysisScreen(MDScreen):
     ### Functions for exporting the analysis to a PDF ###
     def export(self, exportdirectory, plot, employee):
         if app.gooddata is True and app.plotready is True:
+            print("All data is there for a good export.")
 
             # If the data is for a single day:
             if self.date and not self.dates and self.t_start and self.t_end:
@@ -389,6 +399,7 @@ class AnalysisScreen(MDScreen):
                 self.snackbar_show("ERROR: Los datos no se han representado gr\u00E1ficamente.")
 
         else:
+            print("gooddata: {}\nplotready: {}".format(app.gooddata, app.plotready))
             if app.english is True:
                 self.snackbar_show("ERROR: No data for chosen dates and times.")
             else:
@@ -426,45 +437,53 @@ class SettingsScreen(MDScreen):
 
     def set_datafolder(self, newfolder):
         # Add a check here to verify that newfolder is a valid folder path string
-        self.datafolder = newfolder
-        if app.english is True:
-            statustext = "Data folder changed to {}".format(self.datafolder)
+        if os.path.isdir(newfolder):
+            app.datafolder = newfolder
+            if app.english is True:
+                statustext = "Data folder changed to {}".format(app.datafolder)
+            else:
+                statustext = "La carpeta de datos cambi\u00F3 a {}".format(app.datafolder)
+            self.snackbar_show(statustext)
         else:
-            statustext = "La carpeta de datos cambi\u00F3 a {}".format(self.datafolder)
-        self.snackbar_show(statustext)
-        # self.datafolderlabel.text = "Data folder changed to: " + self.datafolder
-        print(self.datafolder)
+            if app.english is True:
+                statustext = "Not a valid folder path."
+            else:
+                statustext = "No es una ruta de carpeta v\u00E1lida"
+            self.snackbar_show(statustext)
 
-    def reset_datafolder(self, defaultfolder):
-        self.datafolder = defaultfolder
+
+    def reset_datafolder(self):
+        app.datafolder = app.directory
         if app.english is True:
-            statustext = "Data folder reset to {}".format(self.datafolder)
+            statustext = "Data folder reset to {}".format(app.datafolder)
         else:
-            statustext = "Carpeta de datos restablecida a {}".format(self.datafolder)
+            statustext = "Carpeta de datos restablecida a {}".format(app.datafolder)
         self.snackbar_show(statustext)
-        # self.datafolderlabel.text = "Data folder reset to: " + self.datafolder
-        print(self.datafolder)
+
 
     def set_exportfolder(self, newfolder):
         # Add a check here to verify that newfolder is a valid folder path string
-        self.exportfolder = newfolder
-        if app.english is True:
-            statustext = "Export folder changed to {}".format(self.datafolder)
+        if os.path.isdir(newfolder):
+            app.exportfolder = newfolder
+            if app.english is True:
+                statustext = "Export folder changed to {}".format(app.exportfolder)
+            else:
+                statustext = "La carpeta de exportaci\u00F3n cambi\u00F3 a {}".format(app.exportfolder)
+            self.snackbar_show(statustext)
         else:
-            statustext = "La carpeta de exportaci\u00F3n cambi\u00F3 a {}".format(self.datafolder)
-        self.snackbar_show(statustext)
-        # self.exportfolderlabel.text = "Export folder changed to: " + self.exportfolder
-        # print(self.exportfolder)
+            if app.english is True:
+                statustext = "Not a valid folder path."
+            else:
+                statustext = "No es una ruta de carpeta v\u00E1lida"
+            self.snackbar_show(statustext)
 
     def reset_exportfolder(self, defaultfolder):
-        self.exportfolder = defaultfolder
+        app.exportfolder = app.export_directory
         if app.english is True:
-            statustext = "Export folder reset to {}".format(self.datafolder)
+            statustext = "Export folder reset to {}".format(app.exportfolder)
         else:
-            statustext = "Exportar carpeta restablecida a {}".format(self.datafolder)
+            statustext = "Exportar carpeta restablecida a {}".format(app.exportfolder)
         self.snackbar_show(statustext)
-        # self.exportfolderlabel.text = "Export folder reset to: " + self.exportfolder
-        print(self.exportfolder)
 
 
 class ContentNavigationDrawer(MDBoxLayout):

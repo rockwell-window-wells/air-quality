@@ -247,7 +247,7 @@ KV = '''
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"bottom": 0.35}
-                on_press: root.reset_datafolder(app.datafolder_default)
+                on_press: root.reset_datafolder()
                 # on_press: folderlabel.text = app.globalstring
 
         MDLabel:
