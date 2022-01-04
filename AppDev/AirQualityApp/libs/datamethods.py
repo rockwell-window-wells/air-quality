@@ -22,7 +22,7 @@ def refresh_data(data_directory):
 
     # Set the directory where the data logs will be kept
     directory = data_directory
-    namepattern = "ARPL-1307_PAC 8000*.txt"
+    namepattern = "*PAC 8000*.txt"
     filepattern = directory + "\\" + namepattern
 
     ### Check for new data files against a logged list ###

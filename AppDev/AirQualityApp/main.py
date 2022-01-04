@@ -366,13 +366,13 @@ class AirQualityApp(MDApp):
     exportfolder = exportfolder_default
     logfilestr = directory + "/LOGGED.csv"
     logfile = StringProperty(logfilestr)
-    lognamepatternstr = "ARPL-1307_PAC 8000*.txt"   # If we ever have more than one device this will need to be changed to reflect multiple serial numbers
+    lognamepatternstr = "*PAC 8000*.txt"
     lognamepattern = StringProperty(lognamepatternstr)
     logfilepatternstr = directory + "/" + lognamepatternstr
     logfilepattern = StringProperty(logfilepatternstr)
     processedfilestr = directory + "/PROCESSED.csv"
     processedfile = StringProperty(processedfilestr)
-    pnamepatternstr = "ARPL-1307_PAC 8000*.pkl"
+    pnamepatternstr = "*PAC 8000*.pkl"
     pnamepattern = StringProperty(pnamepatternstr)
     pfilepatternstr = directory + "/" + pnamepatternstr
     pfilepattern = StringProperty(pfilepatternstr)
