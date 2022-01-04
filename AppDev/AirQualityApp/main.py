@@ -1,3 +1,13 @@
+# Built with:
+# Python 3.9.8
+# kivy 2.0.0
+# kivymd 1.0.0.dev0
+# pandas 1.3.4
+# numpy 1.19.5
+# csv 1.0
+# matplotlib 3.4.3
+# pyfpdf (imported as fpdf) 1.7.2
+
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, ObjectProperty
 
@@ -28,39 +38,6 @@ from os.path import exists
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (1000, 750)
 Window.minimum_width, Window.minimum_height = Window.size
-
-# colors = {
-#     "Green": {
-#         "50": "b8d87a",
-#         "100": "b8d87a",
-#         "200": "b8d87a",
-#         "300": "b8d87a",
-#         "400": "b8d87a",
-#         "500": "b8d87a",
-#         "600": "b8d87a",
-#         "700": "b8d87a",
-#         "800": "b8d87a",
-#         "900": "b8d87a",
-#         "A100": "b8d87a",
-#         "A200": "b8d87a",
-#         "A400": "b8d87a",
-#         "A700": "b8d87a",
-#     },
-#     "Light": {
-#         "StatusBar": "E0E0E0",
-#         "AppBar": "F5F5F5",
-#         "Background": "FAFAFA",
-#         "CardsDialogs": "FFFFFF",
-#         "FlatButtonDown": "cccccc",
-#     },
-#     "Dark": {
-#         "StatusBar": "000000",
-#         "AppBar": "212121",
-#         "Background": "303030",
-#         "CardsDialogs": "424242",
-#         "FlatButtonDown": "999999",
-#     }
-# }
 
 
 class RootScreen(MDScreen):
@@ -389,7 +366,7 @@ class AirQualityApp(MDApp):
     exportfolder = exportfolder_default
     logfilestr = directory + "/LOGGED.csv"
     logfile = StringProperty(logfilestr)
-    lognamepatternstr = "ARPL-1307_PAC 8000*.txt"
+    lognamepatternstr = "ARPL-1307_PAC 8000*.txt"   # If we ever have more than one device this will need to be changed to reflect multiple serial numbers
     lognamepattern = StringProperty(lognamepatternstr)
     logfilepatternstr = directory + "/" + lognamepatternstr
     logfilepattern = StringProperty(logfilepatternstr)
