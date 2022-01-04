@@ -235,7 +235,7 @@ def prepare_data(dstart, dend, tstart, tend, directory):
     return measdata_window, dtstart, dtend
 
 
-def plot_data(measdata_window, dtstart, dtend, annotations, directory):
+def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations, directory):
     """Function for plotting styrene data over chosen interval between dtstart
     and dtend and showing or not showing annotations, and calculating relevant
     measures such as TWA.
@@ -256,6 +256,9 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
     peakidx = measdata_window["Styrene"].idxmax()
     peaklabel = "Peak: {} ppm".format(peak)
 
+    # Calculate the minimum value for plotting purposes
+    min = measdata_window["Styrene"].min()
+
     # Calculate the time weighted average styrene value over the data
     twasum = measdata_window["Styrene"].sum()
     twatime = np.sum(measdata_window["Styrene"].count()) # This assumes the datalogger is always in seconds (don't change that!)
@@ -268,34 +271,45 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
     t0ind = 0
     t1ind = npts - 1
     ste = 0.0
-    while t1ind <= len(measdata_window):
-        stetemp = measdata_window.iloc[t0ind:t1ind]["Styrene"].sum()
-        if stetemp > ste:
-            ste = stetemp
-            steind0 = t0ind
-            steind1 = t1ind
-        t0ind += 1
-        t1ind += 1
+    if len(measdata_window) > npts:
+        while t1ind <= len(measdata_window):
+            stetemp = measdata_window.iloc[t0ind:t1ind]["Styrene"].sum()
+            if stetemp > ste:
+                ste = stetemp
+                steind0 = t0ind
+                steind1 = t1ind
+            t0ind += 1
+            t1ind += 1
 
-    ste = np.around(ste/npts,1)  # Time weight the STE value
-    stelabel = "STE: {} ppm".format(ste)
+        ste = np.around(ste/npts,1)  # Time weight the STE value
+        stelabel = "Max STE: {} ppm".format(ste)
 
-    datalabel = twalabel + "\n" + peaklabel + "\n" + stelabel
+        datalabel = twalabel + "\n" + peaklabel + "\n" + stelabel
+        print(datalabel)
+    else:
+        datalabel = twalabel + "\n" + peaklabel
+        print(datalabel)
+
 
     fig, ax = plt.subplots(figsize=(10,8))
     ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
     # Add if statement here to add annotations and the TWA line if annotations are True
-    if annotations is True:
-        twaline = twa*np.ones(len(measdata_window["Styrene"]))
-        ax.plot(measdata_window["DateTime"], twaline, label="TWA")
-        ax.axvline(x=measdata_window.iloc[steind0]["DateTime"], color='m', label="Highest STE")
-        ax.axvline(x=measdata_window.iloc[steind1]["DateTime"], color='m')
-
-        # Label the TWA value and the peak value
-        ax.annotate(datalabel, (measdata_window.iloc[0]["DateTime"], (8/10)*peak),
-            (measdata_window.iloc[0]["DateTime"], (8/10)*peak))
+    if lineannotations is True:
+        # twaline = twa*np.ones(len(measdata_window["Styrene"]))
+        # ax.plot(measdata_window["DateTime"], twaline, label="TWA")
+        ax.axhline(y=twa, color='r', label="TWA")
+        if ste > 0.0:
+            ax.axvline(x=measdata_window.iloc[steind0]["DateTime"], color='m', label="Highest STE")
+            ax.axvline(x=measdata_window.iloc[steind1]["DateTime"], color='m')
 
         ax.legend()
+
+    if valueannotations is True:
+        # Label the TWA value and the peak value
+        ypos = (9/10)*(peak-min) + min
+        ax.annotate(datalabel, (measdata_window.iloc[0]["DateTime"], ypos),
+        (measdata_window.iloc[0]["DateTime"], ypos))
+
     ax.set_title("Measured Styrene Level")
     ax.set_xlabel("Date and Time")
     ax.set_ylabel("Styrene Concentration (ppm)")
@@ -308,4 +322,4 @@ def plot_data(measdata_window, dtstart, dtend, annotations, directory):
     plt.savefig(plotname)
     plt.close()
 
-    return twa, peak, plotname
+    return twa, peak, ste, plotname

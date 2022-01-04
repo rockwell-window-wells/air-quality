@@ -48,7 +48,8 @@ KV = '''
     name: "analysisscreen"
     # singleday_status: singleday_status
     plotsingle: plotsingle
-    annotatecheck: annotatecheck
+    annotatevalues: annotatevalues
+    annotatelines: annotatelines
     employeename: employeename
 
     MDGridLayout:
@@ -58,7 +59,7 @@ KV = '''
 
         MDGridLayout:
             # orientation: "vertical"
-            rows: 8
+            rows: 9
             spacing: 10
             padding: 10
             # md_bg_color: app.theme_cls.accent_color
@@ -70,7 +71,7 @@ KV = '''
                     id: singledaytitle
                     text: "Analysis"
                     font_style: "H5"
-                    pos_hint: {"top": 0.7, "x": 0.01}
+                    pos_hint: {"top": 0.6, "x": 0.01}
 
 
             AnchorLayout:
@@ -133,7 +134,7 @@ KV = '''
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
                     on_release:
-                        root.calculate(root.annotatecheck.active, app.directory)
+                        root.calculate(root.annotatevalues.active, root.annotatelines.active, app.directory)
 
             AnchorLayout:
                 anchor_x: "left"
@@ -154,12 +155,23 @@ KV = '''
                 orientation: "horizontal"
 
                 CheckBox:
-                    id: annotatecheck
+                    id: annotatevalues
                     color: [0.01, 1, 0.01, 1]
                     active: True
 
                 MDLabel:
-                    text: "Annotate Chart"
+                    text: "Annotate Values"
+
+            MDBoxLayout:
+                orientation: "horizontal"
+
+                CheckBox:
+                    id: annotatelines
+                    color: [0.01, 1, 0.01, 1]
+                    active: True
+
+                MDLabel:
+                    text: "Annotate Lines"
 
         MDFloatLayout:
 

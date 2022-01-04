@@ -81,8 +81,10 @@ class AnalysisScreen(MDScreen):
     snackbar = None     # Holding variable for status snackbar
     time_range_dialog = None       # Holding variable for time dialog
     refresh_dialog = None   # Holding variable for refresh data dialog
+    export_dialog = None    # Holding variable for export dialog
     twa = None          # Time-weighted average over the time chosen (doesn't assume 8 hours)
     peak = None         # Maximum styrene value recorded during time range of interest
+    ste = None          # Maximum short term exposure in a 15 minute window
     img_src = StringProperty('assets/Styrene-3D-balls.png')
 
     # Snackbar for showing status messages (better than allocating space to labels)
@@ -232,14 +234,14 @@ class AnalysisScreen(MDScreen):
         self.t_end = time
 
     ### Functions for running analysis on the chosen date and time range ###
-    def calculate(self, annotations, directory):
+    def calculate(self, valueannotations, lineannotations, directory):
         # If the data is from a single day and the time range is chosen:
         if self.date and self.t_start and self.t_end:
             measdata_window, self.dt_start, self.dt_end = prepare_data(self.date, self.date, self.t_start, self.t_end, directory)
             if measdata_window.empty:
                 print('ERROR: No data for chosen date and times.')
             else:
-                self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
+                self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
 
                 print("TWA: {} ppm".format(self.twa))
                 print("Peak: {} ppm".format(self.peak))
@@ -250,7 +252,7 @@ class AnalysisScreen(MDScreen):
             if measdata_window.empty:
                 print('ERROR: No data for chosen date range and times.')
             else:
-                self.twa, self.peak, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, annotations, directory)
+                self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
 
                 print("TWA: {} ppm".format(self.twa))
                 print("Peak: {} ppm".format(self.peak))
@@ -271,7 +273,7 @@ class AnalysisScreen(MDScreen):
             tendstr = tendstr[0:-3]
             tendstr = tendstr.replace(":", "")
             pdfname = str(self.date) + "_{}-{}_Styrene_Report.pdf".format(tstartstr,tendstr)
-            generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, employee, pdfname, exportdirectory)
+            generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
             # print("PDF report generated for single day")
             # print("Look for {} in {}".format(pdfname, exportdirectory))
             self.show_export_dialog()
@@ -285,7 +287,7 @@ class AnalysisScreen(MDScreen):
             tendstr = tendstr[0:-3]
             tendstr = tendstr.replace(":", "")
             pdfname = "{}_{}_{}-{}_Styrene_Report.pdf".format(str(min(self.dates)), str(max(self.dates)), tstartstr, tendstr)
-            generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, employee, pdfname, exportdirectory)
+            generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
             # print("PDF report generated for multiple dates")
             # print("Look for {} in {}".format(pdfname, exportdirectory))
             self.show_export_dialog()
