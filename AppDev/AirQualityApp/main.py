@@ -170,6 +170,7 @@ class AnalysisScreen(MDScreen):
 
     def close_refresh_dialog(self, *args):
         self.refresh_dialog.dismiss(force=True)
+        self.refresh_dialog = None
 
     ### Functions for choosing the date in single date analysis ###
     def show_single_date_picker(self):
@@ -257,6 +258,7 @@ class AnalysisScreen(MDScreen):
                 statustext = "ERROR: La hora de inicio es posterior a la hora de finalizaci\u00F3n."
 
         self.snackbar_show(statustext)
+        self.time_range_dialog = None
 
     def clear_time_dialog(self, *args):
         self.t_start = None
@@ -266,6 +268,7 @@ class AnalysisScreen(MDScreen):
         else:
             statustext = "RANGO DE TIEMPO BORRADO. Elija un intervalo de tiempo antes de ejecutar el an\u00E1lisis."
         self.snackbar_show(statustext)
+        self.time_range_dialog = None
 
     def cancel_time_dialog(self, *args):
         self.time_range_dialog.dismiss(force=True)
@@ -275,6 +278,8 @@ class AnalysisScreen(MDScreen):
             else:
                 statustext = "FALTA RANGO DE TIEMPO. Elija un intervalo de tiempo antes de ejecutar el an\u00E1lisis."
             self.snackbar_show(statustext)
+        self.time_range_dialog = None
+
 
     def show_start_time_picker(self, *args):
         time_dialog = MDTimePicker()
@@ -412,6 +417,7 @@ class AnalysisScreen(MDScreen):
 
     def close_export_dialog(self, *args):
         self.export_dialog.dismiss(force=True)
+        self.export_dialog = None
 
 
 class SettingsScreen(MDScreen):
@@ -563,7 +569,7 @@ class AirQualityApp(MDApp):
     time_range_dialog_end_esp = "Finalizaci\u00F3n"
     clear_btn_esp = "Limpiar"
     cancel_btn_esp = "Cancelar"
-    export_dialog_title_esp = "Exportaci\u00F3n de datos completa"
+    export_dialog_title_esp = "Exportaci\u00F3n de Datos Completa"
 
 
     settings_title_esp  = "Ajustes"
