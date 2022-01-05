@@ -556,7 +556,7 @@ class AirQualityApp(MDApp):
     refresh_data_esp = "Actualizar datos"
     single_day_esp = "Fecha \u00FAnica"
     multi_day_esp = "Fechas multiples"
-    time_range_esp = "Intervalo de tiempo"
+    time_range_esp = "Rango de tiempo"
     calculate_esp = "Calcular"
     export_esp = "Exportar"
     annotate_vals_esp = "Anotar Valores"
