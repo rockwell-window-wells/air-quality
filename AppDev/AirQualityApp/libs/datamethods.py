@@ -302,10 +302,10 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
     if lineannotations is True:
         # twaline = twa*np.ones(len(measdata_window["Styrene"]))
         # ax.plot(measdata_window["DateTime"], twaline, label="TWA")
-        ax.axhline(y=twa, color='r', label="TWA")
+        ax.axhline(y=twa, color='r', linestyle='-', label="TWA")
         if ste > 0.0:
-            ax.axvline(x=measdata_window.iloc[steind0]["DateTime"], color='m', label="Highest STE")
-            ax.axvline(x=measdata_window.iloc[steind1]["DateTime"], color='m')
+            ax.axvline(x=measdata_window.iloc[steind0]["DateTime"], color='m', linestyle='-', alpha=0.5, label="Highest STE")
+            ax.axvline(x=measdata_window.iloc[steind1]["DateTime"], color='m', linestyle='-', alpha=0.5)
 
         ax.legend()
 
