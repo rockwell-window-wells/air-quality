@@ -53,23 +53,23 @@ sampling = "1T"   # Take a sample at this interval (S for seconds, T for minutes
 for i in range(npts):
     rowstr = str(rawdata.loc[i])
     rowlist = rowstr.split(";")
-    
+
     if any("VAL" in string for string in rowlist):
         eventtype.append("VAL")
-        dtime  = dt.datetime.strptime(rowlist[1],"%Y%m%d%H%M%S")        
+        dtime  = dt.datetime.strptime(rowlist[1],"%Y%m%d%H%M%S")
         datetime.append(dtime)
         date.append(dtime.date())
         time.append(dtime.time())
-        
+
         styrenestr = rowlist[2]
         split = styrenestr.split("\n")
         if "INV" in split[0]:
             split[0] = float("NaN")
         else:
             split[0] = float(split[0])
-            
+
         styrene.append(split[0])
-        
+
 measdata = pd.DataFrame({"EventType":eventtype,
                          "DateTime":datetime,
                          "Date":date,
@@ -123,10 +123,10 @@ plt.show()
 
 # Calculate time-weighted average (using total time measured -- this will need to be changed for 8 hour measurements):
 # for ind in measdata.index:
-    
+
 #     time = df["Time"][ind]
 #     if time > shifts.loc["Day","Start"] and time < shifts.loc["Day","End"]:
-    
+
 
 peakval = measdata_window["Styrene"].max()
 
@@ -135,4 +135,3 @@ twatime = measdata_window["DateTime"].max() - measdata_window["DateTime"].min()
 twatime = twatime.total_seconds()
 twa = twasum/twatime
 twa = np.around(twa,1)
-
