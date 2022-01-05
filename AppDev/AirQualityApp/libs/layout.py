@@ -140,7 +140,7 @@ KV = '''
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
                     on_release:
-                        root.calculate(root.annotatevalues.active, root.annotatelines.active, app.directory)
+                        root.calculate(root.annotatevalues.active, root.annotatelines.active, app.datafolder)
 
             AnchorLayout:
                 anchor_x: "left"
@@ -154,7 +154,7 @@ KV = '''
                     pos_hint: {"top": 0.5, "right": 0.5}
                     elevation: 5
                     on_release:
-                        root.export(app.export_directory, root.img_src, employeename.text)
+                        root.export(app.exportfolder, root.img_src, employeename.text)
 
 
             MDBoxLayout:

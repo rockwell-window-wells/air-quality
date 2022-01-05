@@ -144,10 +144,13 @@ class AnalysisScreen(MDScreen):
         # NOTE: THIS COULD BE UPDATED LATER TO GIVE THE DETAILS OF THE REFRESH
         # IN A DIALOG BOX SO THE USER KNOWS HOW LONG TO WAIT. OR FIGURE OUT HOW
         # TO ADD A PROGRESS BAR HERE.
-        refresh_data(datadirectory)
+        message = refresh_data(datadirectory)
+        if message:
+            self.snackbar_show(message)
         # status_text = "Data has been refreshed"
         # self.snackbar_show(status_text)
-        self.show_refresh_dialog()
+        else:
+            self.show_refresh_dialog()
 
     def show_refresh_dialog(self, *args):
         theme_cls = ThemeManager()
@@ -251,7 +254,7 @@ class AnalysisScreen(MDScreen):
             if app.english is True:
                 statustext = "TIME RANGE SET: {} to {}".format(self.t_start, self.t_end)
             else:
-                statustext = "SE HA FIJADO EL RANGO DE TIEMPO: {} to {}".format(self.t_start, self.t_end)
+                statustext = "SE HA FIJADO EL RANGO DE TIEMPO: {} a {}".format(self.t_start, self.t_end)
         if self.date and (self.t_start >= self.t_end):
             if app.english is True:
                 statustext = "ERROR: Start time is later than end time."
@@ -300,6 +303,7 @@ class AnalysisScreen(MDScreen):
 
     ### Functions for running analysis on the chosen date and time range ###
     def calculate(self, valueannotations, lineannotations, directory):
+        print("Data is being calculated from {}".format(directory))
         # If the data is from a single day and the time range is chosen:
         if self.date and self.t_start and self.t_end:
             measdata_window, self.dt_start, self.dt_end = prepare_data(self.date, self.date, self.t_start, self.t_end, directory)
@@ -510,23 +514,23 @@ class DrawerList(ThemableBehavior, MDList):
 class AirQualityApp(MDApp):
     # Global settings
     # globalstring = StringProperty('testing, testing.....')
-    directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Data Logs"
-    export_directory = "Z:/Safety/Inspections & Assessments/Air Samplings/PAC 8000 Reports"
+    directory = "Z:\\Safety\\Inspections & Assessments\\Air Samplings\\PAC 8000 Data Logs"
+    export_directory = "Z:\\Safety\\Inspections & Assessments\\Air Samplings\\PAC 8000 Reports"
     datafolder_default = StringProperty(directory)
     exportfolder_default = StringProperty(export_directory)
     datafolder = datafolder_default
     exportfolder = exportfolder_default
-    logfilestr = directory + "/LOGGED.csv"
+    logfilestr = directory + "\\LOGGED.csv"
     logfile = StringProperty(logfilestr)
     lognamepatternstr = "*PAC 8000*.txt"
     lognamepattern = StringProperty(lognamepatternstr)
-    logfilepatternstr = directory + "/" + lognamepatternstr
+    logfilepatternstr = directory + "\\" + lognamepatternstr
     logfilepattern = StringProperty(logfilepatternstr)
-    processedfilestr = directory + "/PROCESSED.csv"
+    processedfilestr = directory + "\\PROCESSED.csv"
     processedfile = StringProperty(processedfilestr)
     pnamepatternstr = "*PAC 8000*.pkl"
     pnamepattern = StringProperty(pnamepatternstr)
-    pfilepatternstr = directory + "/" + pnamepatternstr
+    pfilepatternstr = directory + "\\" + pnamepatternstr
     pfilepattern = StringProperty(pfilepatternstr)
 
     ### Labels in English ###
