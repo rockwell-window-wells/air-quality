@@ -24,6 +24,8 @@ class SingleDayPDF(FPDF):
             os.chdir(path_parent)
         elif os.path.basename(os.getcwd()) == "AirQualityApp":
             print("Currently in AirQualityApp directory")
+        else:
+            print("NO IDEA WHERE THIS APP IS RUNNING FROM")
 
         self.image('assets/RockwellFullLogo.png', 10, 8, 33)
         self.set_font('Arial', 'B', 11)
@@ -87,6 +89,8 @@ class MultiDayPDF(FPDF):
             os.chdir(path_parent)
         elif os.path.basename(os.getcwd()) == "AirQualityApp":
             print("Currently in AirQualityApp directory")
+        else:
+            print("NO IDEA WHERE THIS APP IS RUNNING FROM")
 
         self.image('assets/RockwellFullLogo.png', 10, 8, 33)
         self.set_font('Arial', 'B', 11)

@@ -4,7 +4,6 @@ KV = '''
     id: home_screen
 
     MDBoxLayout:
-        # md_bg_color: app.theme_cls.primary_color
         orientation: "vertical"
 
         AnchorLayout:
@@ -51,7 +50,6 @@ KV = '''
 <AnalysisScreen>:
     name: "analysisscreen"
     id: analysis_screen
-    # singleday_status: singleday_status
     plotsingle: plotsingle
     annotatevalues: annotatevalues
     annotatelines: annotatelines
@@ -64,11 +62,9 @@ KV = '''
         spacing: 10
 
         MDGridLayout:
-            # orientation: "vertical"
             rows: 9
             spacing: 10
             padding: 10
-            # md_bg_color: app.theme_cls.accent_color
             size_hint: (0.25, 1)
 
             MDFloatLayout:
@@ -190,7 +186,6 @@ KV = '''
                     id: plotsingle
                     size_hint_y: 4.5
                     pos_hint: {"top": 1, "x": 0.0}
-                    # md_bg_color: app.theme_cls.accent_color
 
                     # Put the chart here
                     FitImage:
@@ -238,7 +233,7 @@ KV = '''
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"bottom": 0.35}
-                on_press:
+                on_release:
                     root.set_datafolder(datafolderpath.text) if datafolderpath.text != "" else None
                     datafolderpath.text = ""
 
@@ -247,8 +242,7 @@ KV = '''
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"bottom": 0.35}
-                on_press: root.reset_datafolder()
-                # on_press: folderlabel.text = app.globalstring
+                on_release: root.reset_datafolder()
 
         MDLabel:
             id: datafolderlabel
@@ -270,7 +264,7 @@ KV = '''
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"top": 0.75}
-                on_press:
+                on_release:
                     root.set_exportfolder(exportfolderpath.text) if exportfolderpath.text != "" else None
                     exportfolderpath.text = ""
 
@@ -279,7 +273,7 @@ KV = '''
                 font_style: "Button"
                 elevation: 5
                 pos_hint: {"top": 0.75}
-                on_press: root.reset_exportfolder(app.exportfolder_default)
+                on_release: root.reset_exportfolder(app.exportfolder_default)
 
         MDLabel:
             id: exportfolderlabel
@@ -290,7 +284,6 @@ KV = '''
 # Menu item in the DrawerList list.
 <ItemDrawer>:
     theme_text_color: "Custom"
-    # on_release: self.parent.set_color_item(self)
 
     IconLeftWidget:
         id: icon
@@ -323,21 +316,21 @@ KV = '''
             ItemDrawer:
                 text: app.home_title
                 icon: "home"
-                on_press:
+                on_release:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "homescreen"
 
             ItemDrawer:
                 text: app.analysis_title
                 icon: "chart-line"
-                on_press:
+                on_release:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "analysisscreen"
 
             ItemDrawer:
                 text: app.settings_title
                 icon: "cog"
-                on_press:
+                on_release:
                     root.nav_drawer.set_state("close")
                     root.screen_manager.current = "settings"
 

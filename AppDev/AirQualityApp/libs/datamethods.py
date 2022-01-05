@@ -55,7 +55,6 @@ def refresh_data(data_directory):
             print("ERROR: No raw data .txt files exist in the chosen directory.")
             message = "ERROR: No raw data .txt files exist in the chosen directory."
             break
-            # raise Exception("No raw data .txt files exist in the chosen data directory.")
         else:
             for file in glob.glob(filepattern):
                 base = os.path.basename(file)
@@ -152,9 +151,7 @@ def refresh_data(data_directory):
                 print("{} is not in the processed list".format(base))
 
                 measdata = pd.read_pickle(file)    # Read the PKL data in to a DataFrame
-
                 uniquedates = pd.to_datetime(measdata["DateTime"]).dt.date.unique()
-                # print(uniquedates)
 
                 # For each unique date, create a DataFrame with data only from that date
                 for day in uniquedates:
@@ -337,8 +334,6 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
     ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
     # Add if statement here to add annotations and the TWA line if annotations are True
     if lineannotations is True:
-        # twaline = twa*np.ones(len(measdata_window["Styrene"]))
-        # ax.plot(measdata_window["DateTime"], twaline, label="TWA")
         ax.axhline(y=twa, color='r', linestyle='-', label="TWA")
         if ste > 0.0:
             ax.axvline(x=measdata_window.iloc[steind0]["DateTime"], color='m', linestyle='-', alpha=0.5, label="Highest STE")

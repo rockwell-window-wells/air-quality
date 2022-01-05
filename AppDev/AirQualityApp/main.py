@@ -32,8 +32,6 @@ from libs.exportmethods import generatesinglePDF, generatemultiPDF
 import os, sys
 from kivy.resources import resource_add_path, resource_find
 from os.path import exists
-# from libs.datamethods import prepare_data
-# from libs.datamethods import plot_data
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Window.size = (1000, 750)
@@ -147,8 +145,6 @@ class AnalysisScreen(MDScreen):
         message = refresh_data(datadirectory)
         if message:
             self.snackbar_show(message)
-        # status_text = "Data has been refreshed"
-        # self.snackbar_show(status_text)
         else:
             self.show_refresh_dialog()
 
@@ -185,7 +181,6 @@ class AnalysisScreen(MDScreen):
         self.date = value
         self.dates = None
         print("self.date = {}\nself.dates = {}".format(self.date, self.dates))
-        # print(instance, value, date_range)
 
     ### Functions for choosing the date in single date analysis ###
     def show_multi_date_picker(self):
@@ -308,7 +303,6 @@ class AnalysisScreen(MDScreen):
         if self.date and self.t_start and self.t_end:
             measdata_window, self.dt_start, self.dt_end = prepare_data(self.date, self.date, self.t_start, self.t_end, directory)
             if measdata_window.empty:
-                # print("ERROR: No data for chosen date and times.")
                 if app.english is True:
                     self.snackbar_show("ERROR: No data for chosen date and times.")
                 else:
@@ -317,10 +311,6 @@ class AnalysisScreen(MDScreen):
                 app.gooddata = True
                 self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
                 app.plotready = True
-                print(app.plotready)
-
-                # print("TWA: {} ppm".format(self.twa))
-                # print("Peak: {} ppm".format(self.peak))
 
         # If the data is from multiple dates and the time range is chosen:
         elif self.dates and self.t_start and self.t_end:
@@ -336,10 +326,6 @@ class AnalysisScreen(MDScreen):
                 app.gooddata = True
                 self.twa, self.peak, self.ste, self.img_src = plot_data(measdata_window, self.dt_start, self.dt_end, valueannotations, lineannotations, directory)
                 app.plotready = True
-                print(app.plotready)
-
-                # print("TWA: {} ppm".format(self.twa))
-                # print("Peak: {} ppm".format(self.peak))
 
         elif not self.date and not self.dates:
             if app.english is True:
@@ -367,8 +353,6 @@ class AnalysisScreen(MDScreen):
                 tendstr = tendstr.replace(":", "")
                 pdfname = str(self.date) + "_{}-{}_Styrene_Report.pdf".format(tstartstr,tendstr)
                 generatesinglePDF(self.date, self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
-                # print("PDF report generated for single day")
-                # print("Look for {} in {}".format(pdfname, exportdirectory))
                 self.show_export_dialog()
 
 
@@ -381,8 +365,6 @@ class AnalysisScreen(MDScreen):
                 tendstr = tendstr.replace(":", "")
                 pdfname = "{}_{}_{}-{}_Styrene_Report.pdf".format(str(min(self.dates)), str(max(self.dates)), tstartstr, tendstr)
                 generatemultiPDF(min(self.dates), max(self.dates), self.t_start, self.t_end, plot, self.twa, self.peak, self.ste, employee, pdfname, exportdirectory)
-                # print("PDF report generated for multiple dates")
-                # print("Look for {} in {}".format(pdfname, exportdirectory))
                 self.show_export_dialog()
 
             elif not self.date and not self.dates:
