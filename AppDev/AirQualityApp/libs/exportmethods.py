@@ -146,7 +146,7 @@ def generatesinglePDF(date, tstart, tend, plot, twa, peak, ste, employee, filena
         i = 1
         while os.path.exists(exportpath + '/' + filename + "({}).pdf".format(i)):
             i += 1
-    exportfilepath = exportpath + '/' + filename + "({}).pdf".format(i)
+        exportfilepath = exportpath + '/' + filename + "({}).pdf".format(i)
     pdf.output(exportfilepath, 'F')
 
 def generatemultiPDF(dstart, dend, tstart, tend, plot, twa, peak, ste, employee, filename, exportpath):
@@ -160,5 +160,5 @@ def generatemultiPDF(dstart, dend, tstart, tend, plot, twa, peak, ste, employee,
         i = 1
         while os.path.exists(exportpath + '/' + filename + "({}).pdf".format(i)):
             i += 1
-    exportfilepath = exportpath + '/' + filename + "({}).pdf".format(i)
+        exportfilepath = exportpath + '/' + filename + "({}).pdf".format(i)
     pdf.output(exportfilepath, 'F')
