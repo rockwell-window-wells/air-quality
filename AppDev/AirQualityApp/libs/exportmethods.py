@@ -138,27 +138,31 @@ class MultiDayPDF(FPDF):
 def generatesinglePDF(date, tstart, tend, plot, twa, peak, ste, employee, filename, exportpath):
     pdf = SingleDayPDF()
     pdf.print_page(date, tstart, tend, plot, twa, peak, ste, employee)
-    exportfilepath = exportpath + '/' + filename
+    exportfilepath = exportpath + '\\' + filename
     # Check if the exported PDF file already exists in the export folder
     if os.path.exists(exportfilepath):
         # Change exportfilepath by appending a number to the end of the PDF file name
         filename = os.path.splitext(filename)[0]
         i = 1
-        while os.path.exists(exportpath + '/' + filename + "({}).pdf".format(i)):
+        while os.path.exists(exportpath + '\\' + filename + "({}).pdf".format(i)):
             i += 1
-        exportfilepath = exportpath + '/' + filename + "({}).pdf".format(i)
+        exportfilepath = exportpath + '\\' + filename + "({}).pdf".format(i)
     pdf.output(exportfilepath, 'F')
+    print(exportfilepath)
+    os.startfile(exportfilepath)
 
 def generatemultiPDF(dstart, dend, tstart, tend, plot, twa, peak, ste, employee, filename, exportpath):
     pdf = MultiDayPDF()
     pdf.print_page(dstart, dend, tstart, tend, plot, twa, peak, ste, employee)
-    exportfilepath = exportpath + '/' + filename
+    exportfilepath = exportpath + '\\' + filename
     # Check if the exported PDF file already exists in the export folder
     if os.path.exists(exportfilepath):
         # Change exportfilepath by appending a number to the end of the PDF file name
         filename = os.path.splitext(filename)[0]
         i = 1
-        while os.path.exists(exportpath + '/' + filename + "({}).pdf".format(i)):
+        while os.path.exists(exportpath + '\\' + filename + "({}).pdf".format(i)):
             i += 1
-        exportfilepath = exportpath + '/' + filename + "({}).pdf".format(i)
+        exportfilepath = exportpath + '\\' + filename + "({}).pdf".format(i)
     pdf.output(exportfilepath, 'F')
+    print(exportfilepath)
+    os.startfile(exportfilepath)
