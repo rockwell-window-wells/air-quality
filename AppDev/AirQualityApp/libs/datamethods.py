@@ -320,6 +320,12 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
             t0ind += 1
             t1ind += 1
 
+        max_steind = len(measdata_window)
+        if steind1 >= max_steind:
+            steind1 = max_steind - 1
+            steind0 = steind1 - npts
+            ste = measdata_window.iloc[steind0:steind1]["Styrene"].sum()
+        
         ste = np.around(ste/npts,1)  # Time weight the STE value
         stelabel = "Max STE: {} ppm".format(ste)
 
@@ -329,9 +335,7 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
         datalabel = twalabel + "\n" + peaklabel
         print(datalabel)
 
-    max_steind = len(measdata_window)
-    if steind1 >= max_steind:
-        steind1 = max_steind - 1
+        
     fig, ax = plt.subplots(figsize=(10,8))
     ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
     # Add if statement here to add annotations and the TWA line if annotations are True
