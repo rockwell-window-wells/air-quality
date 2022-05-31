@@ -329,7 +329,9 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
         datalabel = twalabel + "\n" + peaklabel
         print(datalabel)
 
-
+    max_steind = len(measdata_window)
+    if steind1 >= max_steind:
+        steind1 = max_steind - 1
     fig, ax = plt.subplots(figsize=(10,8))
     ax.plot(measdata_window["DateTime"], measdata_window["Styrene"], label="Measured Values")
     # Add if statement here to add annotations and the TWA line if annotations are True
