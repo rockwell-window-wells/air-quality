@@ -238,6 +238,7 @@ def prepare_data(dstart, dend, tstart, tend, directory):
 
         column_names = ["EventType","DateTime","Date","Time","Styrene"]
         measdata = pd.DataFrame(columns = column_names)
+        
 
         for day in alldates:
             pklname = str(day) + "_Styrene.pkl"
@@ -265,6 +266,10 @@ def prepare_data(dstart, dend, tstart, tend, directory):
             measdata = pd.DataFrame(columns = column_names)
 
 
+    # Divide Styrene column by 0.7 to account for relative sensitivity to
+    # calibration gas
+    measdata["Styrene"] /= 0.7
+    
     # Filter data to show only readings between two datetimes
     after_start = measdata["DateTime"] >= dtstart
     before_end = measdata["DateTime"] <= dtend
@@ -366,3 +371,14 @@ def plot_data(measdata_window, dtstart, dtend, valueannotations, lineannotations
     plt.close()
 
     return twa, peak, ste, plotname
+
+
+if __name__ == "__main__":
+    data_directory = "Z:\\Safety\\Inspections & Assessments\\Air Samplings\\PAC 8000 Data Logs"
+    refresh_data(data_directory)
+    
+    dstart = dt.date(2022,5,19)
+    dend = dt.date(2022,5,19)
+    tstart = dt.time(14,0,0)
+    tend = dt.time(22,0,0)
+    measdata_window, dtstart, dtend = prepare_data(dstart, dend, tstart, tend, data_directory)
